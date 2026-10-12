@@ -155,13 +155,13 @@ const DeliveryPhotos = ({ canWrite }) => {
   )
 }
 
-const TrustContent = () => {
+/** Trust numbers, certifications and delivery photos. `embedded` drops the page frame (used inside Website builder). */
+const TrustContent = ({ embedded = false }) => {
   const { hasPermission } = usePermissions()
   const canWrite = hasPermission('admin:content:write')
   const [tab, setTab] = useState('numbers')
-  return (
-    <PageContainer>
-      <PageHeader title="Trust & proof" subtitle="Real numbers, certifications and delivery photos for the website. Nothing invented." />
+  const body = (
+    <>
       <Tabs value={tab} onChange={(_e, v) => setTab(v)} sx={{ mb: 2 }} variant="scrollable">
         <Tab value="numbers" label="Numbers" />
         <Tab value="certifications" label="Certifications" />
@@ -170,6 +170,13 @@ const TrustContent = () => {
       {tab === 'numbers' && <Numbers canWrite={canWrite} />}
       {tab === 'certifications' && <Certifications canWrite={canWrite} />}
       {tab === 'photos' && <DeliveryPhotos canWrite={canWrite} />}
+    </>
+  )
+  if (embedded) return body
+  return (
+    <PageContainer>
+      <PageHeader title="Trust & proof" subtitle="Real numbers, certifications and delivery photos for the website. Nothing invented." />
+      {body}
     </PageContainer>
   )
 }

@@ -2,10 +2,12 @@ import { useCallback, useState } from 'react'
 
 import { apolloClient } from '@/lib/graphql/client'
 import { showToast } from '@/lib/toast'
+import { markBusy } from '@/lib/busyButton'
 
 /**
  * Run an admin mutation that returns `{ success, message, code, data }` and
- * surface the outcome as a toast. Resolves to `data` on success and `null`
+ * surface the outcome as a toast. The button that was clicked shows a spinner
+ * until the mutation finishes. Resolves to `data` on success and `null`
  * on failure, so callers can write `const saved = await run(...); if (saved) …`.
  *
  * Same intent as the Raddiwalla admin's runMutationWithFeedback, but bound to
@@ -16,6 +18,8 @@ export const useAction = () => {
 
   const run = useCallback(async (mutation, variables, { success, silent = false } = {}) => {
     setLoading(true)
+    // Spinner on the button that started this action (see lib/busyButton).
+    const release = markBusy()
     try {
       const { data } = await apolloClient.mutate({ mutation, variables })
       const result = Object.values(data || {})[0]
@@ -29,6 +33,7 @@ export const useAction = () => {
       // Transport/GraphQL errors are already toasted by the Apollo error link.
       return null
     } finally {
+      release()
       setLoading(false)
     }
   }, [])

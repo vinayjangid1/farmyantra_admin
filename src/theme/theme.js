@@ -1,12 +1,14 @@
 import { alpha, createTheme } from '@mui/material/styles'
 import { getBrandColors } from '@/core/constants/colors'
 
+const DISPLAY = '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
+
 export const getTheme = (mode = 'light') => {
   const colors = getBrandColors(mode)
   const isLight = mode === 'light'
-  const softBorder = isLight ? 'rgba(28, 28, 30, 0.08)' : 'rgba(255, 255, 255, 0.09)'
+  const softBorder = isLight ? 'rgba(23, 35, 55, 0.08)' : 'rgba(255, 255, 255, 0.09)'
   const elevatedShadow = isLight
-    ? '0 18px 50px rgba(22, 27, 18, 0.08)'
+    ? '0 24px 60px -18px rgba(23, 35, 55, 0.22)'
     : '0 18px 50px rgba(0, 0, 0, 0.34)'
 
   return createTheme({
@@ -30,8 +32,8 @@ export const getTheme = (mode = 'light') => {
       info: { main: '#3972E6', light: '#6B96EE', dark: '#2457B8' },
       error: { main: '#E5484D', light: '#EC6F73', dark: '#B92D33' },
       background: {
-        default: isLight ? '#F3F5F0' : '#0C0E0B',
-        paper: isLight ? '#FFFFFF' : '#171A15',
+        default: isLight ? '#F1F3F6' : '#0F1523',
+        paper: isLight ? '#FFFFFF' : '#161E2E',
       },
       text: {
         primary: colors.text.primary,
@@ -50,11 +52,11 @@ export const getTheme = (mode = 'light') => {
             600: '#555C52',
             700: '#3D433A',
             800: '#272C25',
-            900: '#171A15',
+            900: '#161E2E',
           }
         : {
-            50: '#171A15',
-            100: '#1D211B',
+            50: '#161E2E',
+            100: '#1D2739',
             200: '#292E26',
             300: '#3B4237',
             400: '#555D50',
@@ -65,10 +67,10 @@ export const getTheme = (mode = 'light') => {
             900: '#F5F7F2',
           },
       custom: {
-        sidebar: '#11150E',
-        sidebarText: '#F4F7EE',
+        sidebar: '#172337',
+        sidebarText: '#EEF2F8',
         sidebarActive: colors.accent.main,
-        sidebarActiveText: '#11150E',
+        sidebarActiveText: '#172337',
         sidebarHover: 'rgba(255, 255, 255, 0.065)',
         accent: colors.accent.main,
         accentLight: colors.accent.light,
@@ -76,23 +78,23 @@ export const getTheme = (mode = 'light') => {
         black: colors.black.main,
         softBorder,
         elevatedShadow,
-        glass: isLight ? 'rgba(255, 255, 255, 0.78)' : 'rgba(23, 26, 21, 0.82)',
-        mutedSurface: isLight ? '#F7F8F5' : '#1D211B',
+        glass: isLight ? 'rgba(255, 255, 255, 0.78)' : 'rgba(22, 30, 46, 0.82)',
+        mutedSurface: isLight ? '#F5F7FA' : '#1D2739',
         heroGradient: isLight
-          ? 'linear-gradient(125deg, #151A11 0%, #242D1B 55%, #384522 100%)'
-          : 'linear-gradient(125deg, #171D12 0%, #202918 55%, #303C20 100%)',
+          ? 'linear-gradient(125deg, #172337 0%, #1C5FD6 60%, #2874F0 120%)'
+          : 'linear-gradient(125deg, #172337 0%, #1E2D45 60%, #1C5FD6 120%)',
       },
     },
-    shape: { borderRadius: 10 },
+    shape: { borderRadius: 12 },
     typography: {
-      fontFamily: '"Manrope", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+      fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
       fontSize: 13,
-      h1: { fontWeight: 800, letterSpacing: '-0.045em' },
-      h2: { fontWeight: 800, letterSpacing: '-0.04em' },
-      h3: { fontWeight: 800, letterSpacing: '-0.035em' },
-      h4: { fontWeight: 800, fontSize: '1.5rem', letterSpacing: '-0.035em' },
-      h5: { fontWeight: 750, fontSize: '1.15rem', letterSpacing: '-0.025em' },
-      h6: { fontWeight: 700, fontSize: '1rem', letterSpacing: '-0.015em' },
+      h1: { fontFamily: DISPLAY, fontWeight: 700, letterSpacing: '-0.04em' },
+      h2: { fontFamily: DISPLAY, fontWeight: 700, letterSpacing: '-0.035em' },
+      h3: { fontFamily: DISPLAY, fontWeight: 700, letterSpacing: '-0.03em' },
+      h4: { fontFamily: DISPLAY, fontWeight: 700, fontSize: '1.6rem', letterSpacing: '-0.03em' },
+      h5: { fontFamily: DISPLAY, fontWeight: 700, fontSize: '1.2rem', letterSpacing: '-0.025em' },
+      h6: { fontFamily: DISPLAY, fontWeight: 650, fontSize: '1.02rem', letterSpacing: '-0.015em' },
       subtitle1: { fontWeight: 700, fontSize: '0.9rem' },
       subtitle2: { fontWeight: 650, fontSize: '0.8rem' },
       body1: { fontSize: '0.875rem', lineHeight: 1.65 },
@@ -107,8 +109,8 @@ export const getTheme = (mode = 'light') => {
     },
     shadows: [
       'none',
-      isLight ? '0 2px 5px rgba(22, 27, 18, 0.04)' : '0 2px 5px rgba(0, 0, 0, 0.2)',
-      isLight ? '0 8px 24px rgba(22, 27, 18, 0.06)' : '0 8px 24px rgba(0, 0, 0, 0.28)',
+      isLight ? '0 2px 5px rgba(23, 35, 55, 0.04)' : '0 2px 5px rgba(0, 0, 0, 0.2)',
+      isLight ? '0 8px 24px rgba(23, 35, 55, 0.06)' : '0 8px 24px rgba(0, 0, 0, 0.28)',
       elevatedShadow,
       ...Array(21).fill(elevatedShadow),
     ],
@@ -134,11 +136,11 @@ export const getTheme = (mode = 'light') => {
         styleOverrides: {
           body: {
             scrollbarColor: `${alpha(colors.accent.main, 0.5)} transparent`,
-            backgroundColor: isLight ? '#F3F5F0' : '#0C0E0B',
+            backgroundColor: isLight ? '#F1F3F6' : '#0F1523',
           },
           '::selection': {
             backgroundColor: alpha(colors.accent.main, 0.45),
-            color: isLight ? '#11150E' : '#FFFFFF',
+            color: isLight ? '#172337' : '#FFFFFF',
           },
         },
       },
@@ -146,7 +148,7 @@ export const getTheme = (mode = 'light') => {
         styleOverrides: {
           root: {
             color: colors.text.primary,
-            backgroundColor: isLight ? 'rgba(255, 255, 255, 0.76)' : 'rgba(12, 14, 11, 0.76)',
+            backgroundColor: isLight ? 'rgba(255, 255, 255, 0.76)' : 'rgba(15, 21, 35, 0.76)',
             backgroundImage: 'none',
             borderBottom: `1px solid ${softBorder}`,
             boxShadow: 'none',
@@ -158,7 +160,7 @@ export const getTheme = (mode = 'light') => {
         styleOverrides: {
           paper: {
             color: colors.text.primary,
-            backgroundColor: isLight ? '#FFFFFF' : '#171A15',
+            backgroundColor: isLight ? '#FFFFFF' : '#161E2E',
             backgroundImage: 'none',
             borderRight: `1px solid ${softBorder}`,
           },
@@ -169,14 +171,14 @@ export const getTheme = (mode = 'light') => {
           root: {
             position: 'relative',
             overflow: 'hidden',
-            backgroundColor: isLight ? '#FFFFFF' : '#171A15',
+            backgroundColor: isLight ? '#FFFFFF' : '#161E2E',
             backgroundImage: isLight
               ? 'linear-gradient(145deg, rgba(255,255,255,0.98), rgba(250,251,248,0.92))'
-              : 'linear-gradient(145deg, rgba(27,31,25,0.98), rgba(20,23,18,0.96))',
+              : 'linear-gradient(145deg, rgba(26,34,52,0.98), rgba(20,28,44,0.96))',
             border: `1px solid ${softBorder}`,
-            borderRadius: 12,
+            borderRadius: 20,
             boxShadow: isLight
-              ? '0 8px 28px rgba(22, 27, 18, 0.055)'
+              ? '0 1px 2px rgba(23, 35, 55, 0.04), 0 8px 24px -10px rgba(23, 35, 55, 0.12)'
               : '0 8px 28px rgba(0, 0, 0, 0.24)',
             transition:
               'transform 260ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 260ms ease, border-color 260ms ease',
@@ -193,27 +195,27 @@ export const getTheme = (mode = 'light') => {
         defaultProps: { disableElevation: true },
         styleOverrides: {
           root: {
-            minHeight: 38,
-            borderRadius: 9,
+            minHeight: 40,
+            borderRadius: 12,
             padding: '8px 16px',
             boxShadow: 'none',
             transition: 'transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease',
             '&:hover': {
               transform: 'translateY(-1px)',
-              boxShadow: isLight ? '0 6px 16px rgba(22,27,18,.1)' : '0 6px 16px rgba(0,0,0,.26)',
+              boxShadow: isLight ? '0 6px 16px rgba(23,35,55,.1)' : '0 6px 16px rgba(0,0,0,.26)',
             },
             '&:active': { transform: 'translateY(0) scale(0.98)' },
           },
           containedPrimary: {
-            color: '#11150E',
+            color: '#172337',
             backgroundColor: colors.accent.main,
             backgroundImage: 'none',
             '&:hover': {
-              color: '#11150E',
+              color: '#172337',
               backgroundColor: colors.accent.dark,
             },
             '&.Mui-disabled': {
-              color: alpha('#11150E', 0.48),
+              color: alpha('#172337', 0.48),
               backgroundColor: alpha(colors.accent.main, 0.42),
             },
           },
@@ -239,7 +241,7 @@ export const getTheme = (mode = 'light') => {
       MuiOutlinedInput: {
         styleOverrides: {
           root: {
-            borderRadius: 9,
+            borderRadius: 12,
             backgroundColor: isLight ? 'rgba(255,255,255,.75)' : 'rgba(255,255,255,.025)',
             transition: 'box-shadow 180ms ease, background-color 180ms ease',
             '&:hover': { backgroundColor: isLight ? '#FFFFFF' : 'rgba(255,255,255,.045)' },
@@ -251,7 +253,7 @@ export const getTheme = (mode = 'light') => {
       MuiBackdrop: {
         styleOverrides: {
           root: {
-            backgroundColor: isLight ? 'rgba(20, 24, 18, 0.42)' : 'rgba(0, 0, 0, 0.68)',
+            backgroundColor: isLight ? 'rgba(23, 35, 55, 0.42)' : 'rgba(0, 0, 0, 0.68)',
             backdropFilter: 'blur(3px)',
           },
         },
@@ -259,9 +261,9 @@ export const getTheme = (mode = 'light') => {
       MuiDialog: {
         styleOverrides: {
           paper: {
-            borderRadius: 14,
+            borderRadius: 22,
             color: colors.text.primary,
-            backgroundColor: isLight ? '#FFFFFF' : '#171A15',
+            backgroundColor: isLight ? '#FFFFFF' : '#161E2E',
             backgroundImage: 'none',
             border: `1px solid ${softBorder}`,
             boxShadow: elevatedShadow,
@@ -273,7 +275,7 @@ export const getTheme = (mode = 'light') => {
           root: {
             padding: '18px 20px 14px',
             color: colors.text.primary,
-            backgroundColor: isLight ? '#FFFFFF' : '#171A15',
+            backgroundColor: isLight ? '#FFFFFF' : '#161E2E',
             fontSize: '1rem',
             fontWeight: 800,
             borderBottom: `1px solid ${softBorder}`,
@@ -285,7 +287,7 @@ export const getTheme = (mode = 'light') => {
           root: {
             padding: '20px',
             color: colors.text.primary,
-            backgroundColor: isLight ? '#FFFFFF' : '#171A15',
+            backgroundColor: isLight ? '#FFFFFF' : '#161E2E',
             borderColor: `${softBorder} !important`,
           },
         },
@@ -295,7 +297,7 @@ export const getTheme = (mode = 'light') => {
           root: {
             gap: 8,
             padding: '14px 20px 18px',
-            backgroundColor: isLight ? '#F7F8F5' : '#1D211B',
+            backgroundColor: isLight ? '#F7F8F5' : '#1D2739',
             borderTop: `1px solid ${softBorder}`,
           },
         },
@@ -319,7 +321,7 @@ export const getTheme = (mode = 'light') => {
           root: {
             '& .MuiTableCell-head': {
               color: colors.text.secondary,
-              backgroundColor: isLight ? '#F5F7F2' : '#1D211B',
+              backgroundColor: isLight ? '#F5F7F2' : '#1D2739',
               fontWeight: 750,
               fontSize: '0.68rem',
               textTransform: 'uppercase',
@@ -367,7 +369,7 @@ export const getTheme = (mode = 'light') => {
               backgroundColor: alpha(colors.text.primary, isLight ? 0.05 : 0.08),
             },
             '&.Mui-selected': {
-              color: '#11150E',
+              color: '#172337',
               backgroundColor: `${colors.accent.main} !important`,
               boxShadow: `0 6px 16px ${alpha(colors.accent.main, 0.26)}`,
               '&:hover': { backgroundColor: `${colors.accent.dark} !important` },

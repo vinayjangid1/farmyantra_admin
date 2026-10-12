@@ -1,4 +1,5 @@
 import { apolloClient } from '@/lib/graphql/client'
+import { markBusy } from '@/lib/busyButton'
 
 /**
  * Imperative GraphQL helpers for services that are called outside React's render
@@ -86,6 +87,12 @@ export const gqlQuery = async (query, variables, options) => {
  * @returns {Promise<unknown>}
  */
 export const gqlMutate = async (mutation, variables, options) => {
-  const { data } = await apolloClient.mutate({ mutation, variables, ...options })
-  return unwrap(data, mutation)
+  // Spinner on the button that started this mutation (see lib/busyButton).
+  const release = markBusy()
+  try {
+    const { data } = await apolloClient.mutate({ mutation, variables, ...options })
+    return unwrap(data, mutation)
+  } finally {
+    release()
+  }
 }

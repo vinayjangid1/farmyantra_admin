@@ -9,8 +9,8 @@ import { Box, Card, CardContent, Grid, LinearProgress, MenuItem, Stack, Table, T
 import { ErrorState, ExportButton, PageContainer, PageHeader, StatCard } from '@/shared/components'
 import { ENQUIRY_TREND, CONVERSION_FUNNEL, PRODUCT_INTEREST } from '@/services/admin.api'
 
-const CALLBACK = '#E8A317'
-const QUOTE = '#1F4D2B'
+const CALLBACK = '#FFE11B'
+const QUOTE = '#2874F0'
 const pct = (a, b) => (b ? `${Math.round((a / b) * 100)}%` : '—')
 
 const TrendChart = ({ rows }) => {

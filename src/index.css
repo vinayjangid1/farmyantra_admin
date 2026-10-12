@@ -1,6 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
 :root {
+  --font-display: 'Inter', -apple-system, sans-serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
 }
@@ -24,7 +25,6 @@ body {
   min-height: 100dvh;
   overflow: hidden;
   font-family:
-    'Manrope',
     'Inter',
     -apple-system,
     BlinkMacSystemFont,
@@ -58,12 +58,12 @@ svg {
 ::-webkit-scrollbar-thumb {
   border: 2px solid transparent;
   border-radius: 999px;
-  background: rgba(142, 153, 129, 0.46);
+  background: rgba(97, 110, 130, 0.4);
   background-clip: padding-box;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(198, 239, 71, 0.72);
+  background: rgba(255, 225, 27, 0.8);
   background-clip: padding-box;
 }
 
@@ -140,5 +140,79 @@ svg {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+@keyframes chart-draw {
+  from {
+    stroke-dashoffset: 2000;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes bar-grow {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Loading state for the button that started a server action (lib/busyButton). */
+.fy-busy[aria-busy='true'] {
+  position: relative !important;
+  pointer-events: none !important;
+  cursor: progress !important;
+  color: transparent !important;
+}
+.fy-busy[aria-busy='true'] > *,
+.fy-busy[aria-busy='true'] svg {
+  opacity: 0 !important;
+}
+.fy-busy[aria-busy='true']::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 16px;
+  height: 16px;
+  margin: -8px 0 0 -8px;
+  border-radius: 50%;
+  border: 2px solid #2874f0;
+  border-right-color: transparent;
+  animation: fy-busy-spin 0.7s linear infinite;
+  opacity: 1;
+}
+.MuiButton-containedPrimary.fy-busy[aria-busy='true']::after,
+.MuiButton-contained.fy-busy[aria-busy='true']::after {
+  border-color: #172337;
+  border-right-color: transparent;
+}
+.MuiButton-containedError.fy-busy[aria-busy='true']::after,
+.MuiButton-containedSuccess.fy-busy[aria-busy='true']::after,
+.MuiButton-containedInfo.fy-busy[aria-busy='true']::after {
+  border-color: #fff;
+  border-right-color: transparent;
+}
+@keyframes fy-busy-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fy-busy[aria-busy='true']::after {
+    animation-duration: 1.6s !important;
   }
 }

@@ -1,7 +1,7 @@
 import { lazy } from 'react'
 import {
   LayoutDashboard, PhoneCall, FileText, Package, Users, Boxes, FolderTree, Star, Tag, BookOpen, Globe, Mail, UserCog,
-  History, Settings, BarChart3, ListChecks, Sun, Factory, Truck, PackageCheck, Receipt, Gift, Image, ShieldCheck, ShoppingCart, Layers, IdCard,
+  History, Settings, BarChart3, ListChecks, Sun, Factory, Truck, PackageCheck, Receipt, Gift, Image, ShoppingCart, Layers, IdCard,
 } from 'lucide-react'
 
 import Login from '@/pages/Login/Login'
@@ -37,8 +37,7 @@ const Drivers = lazy(() => import('@/pages/Logistics/Drivers'))
 const Invoices = lazy(() => import('@/pages/Invoices/Invoices'))
 const InvoiceEditor = lazy(() => import('@/pages/Invoices/InvoiceEditor'))
 const Rewards = lazy(() => import('@/pages/Rewards/Rewards'))
-const Banners = lazy(() => import('@/pages/Marketing/Banners'))
-const TrustContent = lazy(() => import('@/pages/Marketing/TrustContent'))
+const WebsiteBuilder = lazy(() => import('@/pages/Website/WebsiteBuilder'))
 const AbandonedCarts = lazy(() => import('@/pages/Carts/AbandonedCarts'))
 
 /** `admin:<feature>:read` — the backend enforces the same strings on every resolver. */
@@ -94,9 +93,8 @@ export const navigationConfig = [
     children: [
       { title: 'Offers & coupons', path: '/promotions', icon: Tag, permission: read('promotions') },
       { title: 'Reviews', path: '/reviews', icon: Star, permission: read('reviews') },
-      { title: 'Banners', path: '/banners', icon: Image, permission: read('banners') },
-      { title: 'Trust & proof', path: '/trust', icon: ShieldCheck, permission: read('content') },
-      { title: 'Website content', path: '/content', icon: Globe, permission: read('content') },
+      { title: 'Website builder', path: '/website', icon: Image, permission: read('content') },
+      { title: 'Pages & guides', path: '/content', icon: Globe, permission: read('content') },
     ],
   },
   { title: 'Reports', path: '/reports', icon: BarChart3, permission: read('reports') },
@@ -132,8 +130,9 @@ export const protectedRoutes = [
   { path: '/invoices', element: Invoices, permission: read('invoices') },
   { path: '/invoices/:id', element: InvoiceEditor, permission: read('invoices') },
   { path: '/rewards', element: Rewards, permission: read('rewards') },
-  { path: '/banners', element: Banners, permission: read('banners') },
-  { path: '/trust', element: TrustContent, permission: read('content') },
+  { path: '/website', element: WebsiteBuilder, permission: read('content') },
+  { path: '/banners', redirect: '/website?tab=posters' },
+  { path: '/trust', redirect: '/website?tab=trust' },
   { path: '/customers', element: Customers, permission: read('customers') },
   { path: '/products', element: Products, permission: read('products') },
   { path: '/products/:id', element: ProductEditor, permission: read('products') },

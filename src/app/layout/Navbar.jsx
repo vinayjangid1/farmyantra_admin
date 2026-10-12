@@ -221,7 +221,7 @@ const Navbar = ({ toggleTheme, mode, onMenuClick, onToggleApiLog, minimal }) => 
               sx={{
                 width: 31,
                 height: 31,
-                color: '#11150E',
+                color: '#172337',
                 bgcolor: 'custom.accent',
                 fontSize: '0.75rem',
                 fontWeight: 700,

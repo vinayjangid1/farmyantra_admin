@@ -1,19 +1,20 @@
 /**
  * FarmYantra brand design tokens (same structure as the Raddiwalla admin).
  *
- * Primary: #1F4D2B (field green) — buttons, headers, active states.
- * Accent: #E8A317 (harvest amber) — highlights only (badges, indicators).
+ * Primary: #2874F0 (marketplace blue) — buttons, headers, active states.
+ * Accent: #FFE11B (sunflower yellow) — highlights, active nav, primary CTAs.
+ * Sidebar: #172337 (deep navy). Matches the storefront palette.
  *
  * This is the SINGLE SOURCE OF TRUTH for all colors in the admin panel.
  */
 export const brandColors = {
   light: {
     primary: {
-      main: '#1F4D2B',
-      light: '#2F6B3A',
-      dark: '#12301B',
+      main: '#2874F0',
+      light: '#4F8FF7',
+      dark: '#1C5FD6',
       contrast: '#FFFFFF',
-      subtle: 'rgba(31, 77, 43, 0.07)',
+      subtle: 'rgba(40, 116, 240, 0.08)',
     },
     secondary: {
       main: '#6B7280',
@@ -22,25 +23,25 @@ export const brandColors = {
       contrast: '#FFFFFF',
     },
     accent: {
-      main: '#E8A317',
-      light: '#F2C15B',
-      dark: '#C98A0C',
+      main: '#FFE11B',
+      light: '#FFEB6B',
+      dark: '#F0B400',
       contrast: '#000000',
     },
     black: {
-      main: '#1C1C1E',
-      light: '#2C2C2E',
-      muted: '#6B7280',
+      main: '#212121',
+      light: '#2D3748',
+      muted: '#616161',
       contrast: '#FFFFFF',
     },
     background: {
-      default: '#F6F4EE',
+      default: '#F1F3F6',
       paper: '#FFFFFF',
       elevated: '#FFFFFF',
     },
     text: {
-      primary: '#1C1C1E',
-      secondary: '#6B7280',
+      primary: '#212121',
+      secondary: '#616161',
       disabled: '#A3A3A3',
     },
     divider: '#E5E5EA',
@@ -52,11 +53,11 @@ export const brandColors = {
   },
   dark: {
     primary: {
-      main: '#FFFFFF',
-      light: '#F5F5F7',
-      dark: '#E5E5EA',
-      contrast: '#000000',
-      subtle: 'rgba(255, 255, 255, 0.08)',
+      main: '#5AA2FF',
+      light: '#82BAFF',
+      dark: '#4F8FF7',
+      contrast: '#172337',
+      subtle: 'rgba(90, 162, 255, 0.12)',
     },
     secondary: {
       main: '#8E8E93',
@@ -65,9 +66,9 @@ export const brandColors = {
       contrast: '#000000',
     },
     accent: {
-      main: '#E8A317',
-      light: '#F2C15B',
-      dark: '#C98A0C',
+      main: '#FFE11B',
+      light: '#FFEB6B',
+      dark: '#F0B400',
       contrast: '#000000',
     },
     black: {
@@ -77,9 +78,9 @@ export const brandColors = {
       contrast: '#FFFFFF',
     },
     background: {
-      default: '#000000',
-      paper: '#1C1C1E',
-      elevated: '#2C2C2E',
+      default: '#0F1523',
+      paper: '#161E2E',
+      elevated: '#1D2739',
     },
     text: {
       primary: '#FFFFFF',

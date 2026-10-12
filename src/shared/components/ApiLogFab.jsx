@@ -27,9 +27,9 @@ const ApiLogFab = () => {
             right: 20,
             zIndex: 1300,
             color: '#9fe870',
-            bgcolor: '#11150E',
+            bgcolor: '#172337',
             border: `1px solid ${alpha('#9fe870', 0.4)}`,
-            '&:hover': { bgcolor: '#171C12' },
+            '&:hover': { bgcolor: '#1C5FD6' },
           }}
         >
           <Terminal size={18} />

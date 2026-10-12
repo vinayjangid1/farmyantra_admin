@@ -1,10 +1,21 @@
 /** Authenticated PDF download for staff (token sent as a header, never in the URL). */
 import { GRAPHQL_ENDPOINT } from '@/core/config/env'
 import { getToken } from '@/services/auth.service'
+import { markBusy } from '@/lib/busyButton'
+
+/** Shows a spinner on the clicked button while a file download runs. */
+const withBusy = (fn) => async (...args) => {
+  const release = markBusy()
+  try {
+    return await fn(...args)
+  } finally {
+    release()
+  }
+}
 
 const apiOrigin = () => new URL(GRAPHQL_ENDPOINT).origin
 
-export const openQuotationPdf = async (versionId, { download = false, filename = 'quotation.pdf' } = {}) => {
+export const openQuotationPdf = withBusy(async (versionId, { download = false, filename = 'quotation.pdf' } = {}) => {
   const res = await fetch(`${apiOrigin()}/files/quotations/${versionId}?scope=admin`, { headers: { Authorization: `Bearer ${getToken()}` } })
   if (!res.ok) throw new Error('Could not load the PDF')
   const url = URL.createObjectURL(await res.blob())
@@ -17,7 +28,7 @@ export const openQuotationPdf = async (versionId, { download = false, filename =
     window.open(url, '_blank', 'noopener')
   }
   setTimeout(() => URL.revokeObjectURL(url), 60_000)
-}
+})
 
 export const reviewMediaUrl = async (mediaId) => {
   const res = await fetch(`${apiOrigin()}/files/review-media/${mediaId}`, { headers: { Authorization: `Bearer ${getToken()}` } })
@@ -44,11 +55,11 @@ const openBlob = (blob, { download = false, filename = 'file.pdf' } = {}) => {
 }
 
 /** Invoice / credit note PDF (drafts carry a DRAFT watermark). */
-export const openInvoicePdf = async (invoiceId, { download = false, filename = 'invoice.pdf' } = {}) => {
+export const openInvoicePdf = withBusy(async (invoiceId, { download = false, filename = 'invoice.pdf' } = {}) => {
   const res = await fetch(`${apiOrigin()}/files/invoices/${invoiceId}?scope=admin`, { headers: { Authorization: `Bearer ${getToken()}` } })
   if (!res.ok) throw new Error('Could not load the PDF')
   openBlob(await res.blob(), { download, filename })
-}
+})
 
 /** A PDF returned as base64 by GraphQL (template previews). */
 export const openBase64Pdf = ({ base64, filename = 'preview.pdf' }) => {

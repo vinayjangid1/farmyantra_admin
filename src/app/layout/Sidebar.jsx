@@ -79,7 +79,7 @@ const Sidebar = ({ mobileOpen, onMobileClose, isCollapsed, onToggleCollapse }) =
     [activeConfig, hasPermission],
   )
 
-  const sidebarText = '#F4F7EE'
+  const sidebarText = '#EEF2F8'
   const accent = theme.palette.custom.accent
 
   useEffect(() => {
@@ -132,7 +132,7 @@ const Sidebar = ({ mobileOpen, onMobileClose, isCollapsed, onToggleCollapse }) =
           borderRadius: 3,
           justifyContent: isCollapsed ? 'center' : 'flex-start',
           color: directActive
-            ? '#11150E'
+            ? '#172337'
             : childActive
               ? accent
               : alpha(sidebarText, level === 0 ? 0.72 : 0.52),
@@ -148,11 +148,11 @@ const Sidebar = ({ mobileOpen, onMobileClose, isCollapsed, onToggleCollapse }) =
                 width: 5,
                 height: 5,
                 borderRadius: '50%',
-                bgcolor: directActive ? '#11150E' : alpha(sidebarText, 0.2),
+                bgcolor: directActive ? '#172337' : alpha(sidebarText, 0.2),
               }
               : {},
           '&:hover': {
-            color: directActive ? '#11150E' : '#FFFFFF',
+            color: directActive ? '#172337' : '#FFFFFF',
             bgcolor: directActive ? accent : alpha('#FFFFFF', 0.07),
             transform: isCollapsed ? 'none' : 'translateX(2px)',
           },
@@ -405,11 +405,11 @@ const Sidebar = ({ mobileOpen, onMobileClose, isCollapsed, onToggleCollapse }) =
           width: currentWidth,
           boxSizing: 'border-box',
           overflowX: 'hidden',
-          color: '#F4F7EE',
-          backgroundColor: '#11150E',
-          backgroundImage: 'linear-gradient(180deg, #11150E 0%, #171C12 100%)',
+          color: '#EEF2F8',
+          backgroundColor: '#172337',
+          backgroundImage: 'radial-gradient(120% 50% at 0% 0%, rgba(40,116,240,.28), transparent 60%), linear-gradient(180deg, #172337 0%, #1E2D45 100%)',
           borderRight: `1px solid ${alpha('#FFFFFF', 0.055)}`,
-          boxShadow: isMobile ? '18px 0 60px rgba(0,0,0,.35)' : '10px 0 35px rgba(15,18,12,.08)',
+          boxShadow: isMobile ? '18px 0 60px rgba(0,0,0,.35)' : '10px 0 35px rgba(23,35,55,.10)',
           transition: theme.transitions.create('width', {
             duration: 280,
             easing: theme.transitions.easing.easeOut,
