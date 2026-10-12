@@ -8,7 +8,6 @@ import CustomTextField from '@/shared/components/CustomTextField'
 import CustomButton from '@/shared/components/CustomButton'
 import { LOGIN } from '@/services/admin.api'
 import { isAuthenticated, saveToken } from '@/services/auth.service'
-import { ROUTES } from '@/core/config/app.config'
 import { APP_LOGO_URL } from '@/core/constants/branding'
 
 const Login = () => {
@@ -19,7 +18,7 @@ const Login = () => {
   const [error, setError] = useState(null)
   const [login, { loading }] = useMutation(LOGIN)
 
-  if (isAuthenticated()) return <Navigate to={ROUTES.dashboard} replace />
+  if (isAuthenticated()) return <Navigate to="/" replace />
 
   const submit = async (event) => {
     event.preventDefault()
@@ -32,7 +31,7 @@ const Login = () => {
         return
       }
       saveToken(result.token)
-      navigate(location.state?.from || ROUTES.dashboard, { replace: true })
+      navigate(location.state?.from || '/', { replace: true })
     } catch (err) {
       setError(err.message)
     }

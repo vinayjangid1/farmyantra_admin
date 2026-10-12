@@ -1,6 +1,9 @@
 import { useMemo, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { Typography } from '@mui/material'
+import { Button, Typography } from '@mui/material'
+import { Plus } from 'lucide-react'
+
+import { usePermissions } from '@/features/permissions'
 
 import { CustomTable, CustomTextField, FilterDropdown, PageContainer, PageHeader } from '@/shared/components'
 import { StatusChip, usePagedQuery, Toolbar, humanize } from '@/shared/components/fy'
@@ -8,10 +11,11 @@ import { ORDERS } from '@/services/admin.api'
 import { formatPaise } from '@/utils/money'
 import { formatDate } from '@/utils/dateFormatter'
 
-const STATUSES = ['pending_confirmation', 'confirmed', 'in_production', 'ready_to_dispatch', 'dispatched', 'delivered', 'completed', 'cancelled']
+const STATUSES = ['pending_confirmation', 'awaiting_customer_confirmation', 'confirmed', 'in_production', 'partially_ready', 'ready_to_dispatch', 'partially_dispatched', 'dispatched', 'partially_delivered', 'delivered', 'completed', 'cancelled']
 
 const Orders = () => {
   const navigate = useNavigate()
+  const { hasPermission } = usePermissions()
   const [params] = useSearchParams()
   const [status, setStatus] = useState(params.get('status') || 'all')
   const [search, setSearch] = useState('')
@@ -28,7 +32,8 @@ const Orders = () => {
   ]
   return (
     <PageContainer>
-      <PageHeader title="Orders" subtitle="Created from accepted quotations. Payments are recorded manually — nothing is charged online." count={list.total} />
+      <PageHeader title="Orders" subtitle="From accepted quotations or created by the team. Payments are recorded manually — nothing is charged online." count={list.total} />
+      {hasPermission('admin:orders:write') && <Button variant="contained" startIcon={<Plus size={16} />} sx={{ mb: 2 }} onClick={() => navigate('/orders/new')}>New order for a customer</Button>}
       <Toolbar>
         <CustomTextField label="Search" placeholder="Order, customer, enquiry…" value={search} onChange={(e) => { setSearch(e.target.value); list.resetPage() }} sx={{ minWidth: 260 }} />
         <FilterDropdown label="Status" options={STATUSES.map((s) => ({ value: s, label: humanize(s) }))} value={status} onChange={(v) => { setStatus(v); list.resetPage() }} allLabel="All statuses" />

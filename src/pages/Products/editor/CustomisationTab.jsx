@@ -131,6 +131,7 @@ const CustomisationTab = ({ product, refetch, canWrite }) => {
             <Grid item xs={6} md={2}><TextField fullWidth size="small" type="number" label="Max length" value={pers.max_length} onChange={(e) => setPers({ ...pers, max_length: Number(e.target.value) })} disabled={!canWrite} /></Grid>
             <Grid item xs={12} md={4}><TextField fullWidth size="small" label="Allowed characters" value={pers.allowed_pattern} onChange={(e) => setPers({ ...pers, allowed_pattern: e.target.value })} disabled={!canWrite} helperText="Character-class body, e.g. A-Za-z0-9 .\-&" /></Grid>
             <Grid item xs={6} md={2}><MoneyField label="Price" paise={pers.price_paise} onChange={(v) => setPers({ ...pers, price_paise: v ?? 0 })} disabled={!canWrite} /></Grid>
+            <Grid item xs={6} md={2}><TextField fullWidth size="small" type="number" label="Adds days" value={pers.lead_time_impact_days ?? 0} onChange={(e) => setPers({ ...pers, lead_time_impact_days: Number(e.target.value) })} disabled={!canWrite} /></Grid>
             <Grid item xs={6} md={2}><FormControlLabel control={<Switch checked={pers.is_required} onChange={(e) => setPers({ ...pers, is_required: e.target.checked })} disabled={!canWrite} />} label="Required" /></Grid>
           </Grid>
           {canWrite && <SaveBar onSave={async () => { if (await run(SAVE_PERSONALISATION, { productId: product.id, input: pers }, { success: 'Personalisation saved' })) refetch() }} loading={loading} label="Save personalisation" />}
@@ -158,6 +159,7 @@ const CustomisationTab = ({ product, refetch, canWrite }) => {
               <TextField size="small" label="Hex" value={d.hex} onChange={(e) => patch({ hex: e.target.value })} sx={{ width: 120 }} />
             </Stack>
             <MoneyField label="Price change (can be negative)" paise={d.price_delta_paise} onChange={(v) => patch({ price_delta_paise: v ?? 0 })} inputProps={{ step: '0.01' }} />
+            <TextField size="small" type="number" label="Adds waiting time (days)" value={d.lead_time_impact_days ?? 0} onChange={(e) => patch({ lead_time_impact_days: Number(e.target.value) })} helperText="e.g. a special paint colour that needs a week" />
             <FormControlLabel control={<Switch checked={Boolean(d.is_default)} onChange={(e) => patch({ is_default: e.target.checked })} />} label="Default colour" />
             <ImageUpload productId={product.id} value={d.preview_image_url} onChange={(url) => patch({ preview_image_url: url })} />
           </>
@@ -188,6 +190,7 @@ const CustomisationTab = ({ product, refetch, canWrite }) => {
                   <MenuItem value="fixed">Fixed</MenuItem><MenuItem value="per_unit">Per unit</MenuItem><MenuItem value="on_request">On request</MenuItem>
                 </TextField>
                 <MoneyField label="Price" paise={d.price_paise} onChange={(v) => patch({ price_paise: v ?? 0 })} disabled={d.pricing_mode === 'on_request'} />
+                <TextField size="small" type="number" label="Adds waiting time (days)" value={d.lead_time_impact_days ?? 0} onChange={(e) => patch({ lead_time_impact_days: Number(e.target.value) })} sx={{ minWidth: 180 }} />
               </Stack>
               <Stack direction="row" spacing={2}>
                 <TextField size="small" type="number" label="Min qty" value={d.min_qty} onChange={(e) => patch({ min_qty: Number(e.target.value) })} />
@@ -211,6 +214,7 @@ const CustomisationTab = ({ product, refetch, canWrite }) => {
             <I18nField label="Placement name" value={d.name_i18n} onChange={(v) => patch({ name_i18n: v })} requiredEn />
             <TextField size="small" label="Code" value={d.code} onChange={(e) => patch({ code: e.target.value })} helperText="e.g. FRONT_PANEL" />
             <MoneyField label="Price change" paise={d.price_delta_paise} onChange={(v) => patch({ price_delta_paise: v ?? 0 })} />
+            <TextField size="small" type="number" label="Adds waiting time (days)" value={d.lead_time_impact_days ?? 0} onChange={(e) => patch({ lead_time_impact_days: Number(e.target.value) })} />
             <ImageUpload productId={product.id} value={d.preview_image_url} onChange={(url) => patch({ preview_image_url: url })} />
           </>
         )}

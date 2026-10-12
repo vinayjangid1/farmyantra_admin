@@ -23,10 +23,12 @@ import SpecsTab from './editor/SpecsTab'
 import MediaTab from './editor/MediaTab'
 import CustomisationTab from './editor/CustomisationTab'
 import RelatedTab from './editor/RelatedTab'
+import FulfilmentTab from './editor/FulfilmentTab'
 
 const TABS = [
   { key: 'details', label: 'Details', Component: DetailsTab, perm: 'products' },
   { key: 'pricing', label: 'Pricing & tax', Component: PricingTab, perm: 'pricing' },
+  { key: 'fulfilment', label: 'Stock & lead time', Component: FulfilmentTab, perm: 'products' },
   { key: 'translations', label: 'English / हिंदी', Component: TranslationsTab, perm: 'product_translations' },
   { key: 'specs', label: 'Specifications', Component: SpecsTab, perm: 'products' },
   { key: 'media', label: 'Media, documents & 3D', Component: MediaTab, perm: 'products' },

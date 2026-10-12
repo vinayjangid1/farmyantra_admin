@@ -7,8 +7,7 @@ import { categoryOptions } from '@/utils/categories'
 import { useForm, num, int, Section, SaveBar } from './shared'
 
 const FUELS = ['diesel', 'petrol', 'electric', 'manual', 'tractor_pto', 'solar', 'hybrid', 'other']
-const AVAILABILITY = ['in_stock', 'made_to_order', 'out_of_stock', 'coming_soon', 'discontinued']
-const FIELDS = ['slug', 'sku', 'model', 'brand', 'category_id', 'availability', 'lead_time_days', 'warranty_months', 'min_order_qty', 'max_order_qty',
+const FIELDS = ['slug', 'sku', 'model', 'brand', 'category_id', 'warranty_months', 'min_order_qty', 'max_order_qty',
   'power_hp', 'capacity_value', 'capacity_unit', 'fuel_type', 'weight_kg', 'length_mm', 'width_mm', 'height_mm', 'intended_use', 'tags',
   'is_featured', 'is_new_arrival', 'display_order']
 
@@ -26,7 +25,6 @@ const DetailsTab = ({ product, categories, refetch, canWrite }) => {
       brand: form.brand || null,
       fuel_type: form.fuel_type || null,
       capacity_unit: form.capacity_unit || null,
-      lead_time_days: int(form.lead_time_days),
       warranty_months: int(form.warranty_months),
       min_order_qty: int(form.min_order_qty) || 1,
       max_order_qty: int(form.max_order_qty),
@@ -57,8 +55,6 @@ const DetailsTab = ({ product, categories, refetch, canWrite }) => {
       </Section>
       <Section title="Availability & ordering">
         <Grid container spacing={2}>
-          <Grid item xs={12} md={4}>{field('availability', 'Availability', { select: true, children: AVAILABILITY.map((a) => <MenuItem key={a} value={a}>{humanize(a)}</MenuItem>) })}</Grid>
-          <Grid item xs={6} md={4}>{field('lead_time_days', 'Lead time (days)', { type: 'number' })}</Grid>
           <Grid item xs={6} md={4}>{field('warranty_months', 'Warranty (months)', { type: 'number' })}</Grid>
           <Grid item xs={6} md={4}>{field('min_order_qty', 'Minimum quantity', { type: 'number' })}</Grid>
           <Grid item xs={6} md={4}>{field('max_order_qty', 'Maximum quantity', { type: 'number', helperText: 'Blank = no limit' })}</Grid>

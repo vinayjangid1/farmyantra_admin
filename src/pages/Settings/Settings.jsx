@@ -26,6 +26,13 @@ const SECTIONS = {
   seo: { label: 'SEO', help: 'Fallback titles and descriptions.' },
   features: { label: 'Features', help: 'Switch website features on or off.' },
   social: { label: 'Social links', help: 'Shown in the footer.' },
+  orders: { label: 'Order changes', help: 'How long customers have to confirm a change, and whether a recorded phone call can confirm it (Super Admin decision).' },
+  fulfilment: { label: 'Lead times', help: 'How delivery estimates are worded and the default stock dispatch window.' },
+  delivery: { label: 'Delivery confirmation', help: 'Reminder timing, when staff may mark a delivery themselves, and auto-completion.' },
+  shipping: { label: 'Shipping display', help: 'Which driver/vehicle details customers see, and the dispatch phone number.' },
+  cart: { label: 'Request list (cart)', help: 'Line limits and reminder timing for unsent request lists.' },
+  trust: { label: 'Trust & contact', help: 'Year established, map and working hours for the trust section.' },
+  pwa: { label: 'App install', help: 'Name and colours when customers add the website to their home screen.' },
   email_templates: { label: 'Email templates', help: 'Overrides for notification emails, keyed by event (e.g. quotation_sent). Leave {} to use built-in templates.' },
 }
 const SELECTS = {

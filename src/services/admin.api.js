@@ -122,3 +122,93 @@ export const SETTINGS = gql`query Settings { settings }`
 export const UPDATE_SETTINGS = gql`mutation UpdateSettings($section: String!, $value: JSON!) { updateSettings(section: $section, value: $value) { ${RESULT} } }`
 export const UPLOAD_BRAND_ASSET = gql`mutation UploadBrandAsset($file: Upload!) { uploadBrandAsset(file: $file) { ${RESULT} } }`
 export const ASSIGNABLE_MEMBERS = gql`query AssignableMembers { assignableMembers }`
+
+// ── v2.1: orders, production, logistics, documents, invoices, rewards (§23–§31) ──
+export const ORDER_VERSIONS = gql`query OrderVersions($orderId: ID!) { orderVersions(orderId: $orderId) }`
+export const CUSTOMER_LOOKUP = gql`query CustomerLookup($search: String!) { customerLookup(search: $search) }`
+export const ACCEPT_ORDER = gql`mutation AcceptOrder($id: ID!) { acceptOrder(id: $id) { ${RESULT} } }`
+export const CREATE_ORDER_FOR_CUSTOMER = gql`mutation CreateOrderForCustomer($input: JSON!) { createOrderForCustomer(input: $input) { ${RESULT} } }`
+export const PROPOSE_ORDER_REVISION = gql`mutation ProposeOrderRevision($orderId: ID!, $changes: JSON!, $reason: String!, $idempotencyKey: String!) { proposeOrderRevision(orderId: $orderId, changes: $changes, reason: $reason, idempotencyKey: $idempotencyKey) { ${RESULT} } }`
+export const WITHDRAW_ORDER_REVISION = gql`mutation WithdrawOrderRevision($versionId: ID!, $reason: String!) { withdrawOrderRevision(versionId: $versionId, reason: $reason) { ${RESULT} } }`
+export const RECORD_PHONE_CONFIRMATION = gql`mutation RecordPhoneConfirmation($versionId: ID!, $reason: String!) { recordPhoneConfirmation(versionId: $versionId, reason: $reason) { ${RESULT} } }`
+export const CANCEL_ORDER = gql`mutation CancelOrder($id: ID!, $reason: String!) { cancelOrder(id: $id, reason: $reason) { ${RESULT} } }`
+export const COMPLETE_ORDER = gql`mutation CompleteOrder($id: ID!) { completeOrder(id: $id) { ${RESULT} } }`
+
+export const ABANDONED_CARTS = gql`query AbandonedCarts($consentOnly: Boolean, $minValuePaise: Int, $search: String, $page: Int, $limit: Int) { abandonedCarts(consentOnly: $consentOnly, minValuePaise: $minValuePaise, search: $search, page: $page, limit: $limit) { ${PAGE} } }`
+export const CUSTOMER_CART = gql`query CustomerCart($customerId: ID!) { customerCart(customerId: $customerId) }`
+export const LOG_CART_FOLLOW_UP = gql`mutation LogCartFollowUp($cartId: ID!, $outcome: String!, $note: String) { logCartFollowUp(cartId: $cartId, outcome: $outcome, note: $note) { ${RESULT} } }`
+
+export const MANUFACTURING_TEMPLATES = gql`query ManufacturingTemplates { manufacturingTemplates }`
+export const MANUFACTURING_JOBS = gql`query ManufacturingJobs($status: String, $delayed: Boolean, $search: String, $page: Int, $limit: Int) { manufacturingJobs(status: $status, delayed: $delayed, search: $search, page: $page, limit: $limit) { ${PAGE} } }`
+export const MANUFACTURING_JOB = gql`query ManufacturingJob($id: ID!) { manufacturingJob(id: $id) }`
+export const SAVE_MANUFACTURING_TEMPLATE = gql`mutation SaveManufacturingTemplate($id: ID, $input: JSON!) { saveManufacturingTemplate(id: $id, input: $input) { ${RESULT} } }`
+export const UPDATE_MANUFACTURING_STAGE = gql`mutation UpdateManufacturingStage($jobStageId: ID!, $status: String!, $note: String, $visibility: String, $skipReason: String, $media: [Upload!]) { updateManufacturingStage(jobStageId: $jobStageId, status: $status, note: $note, visibility: $visibility, skipReason: $skipReason, media: $media) { ${RESULT} } }`
+export const ADD_MANUFACTURING_UPDATE = gql`mutation AddManufacturingUpdate($jobId: ID!, $note: String!, $visibility: String, $media: [Upload!]) { addManufacturingUpdate(jobId: $jobId, note: $note, visibility: $visibility, media: $media) { ${RESULT} } }`
+export const REVISE_ITEM_ESTIMATE = gql`mutation ReviseItemEstimate($orderItemId: ID!, $minDate: String!, $maxDate: String!, $reason: String!, $customerVisible: Boolean) { reviseItemEstimate(orderItemId: $orderItemId, minDate: $minDate, maxDate: $maxDate, reason: $reason, customerVisible: $customerVisible) { ${RESULT} } }`
+export const SET_MANUFACTURING_DELAY = gql`mutation SetManufacturingDelay($jobId: ID!, $delayed: Boolean!, $reason: String, $customerVisible: Boolean) { setManufacturingDelay(jobId: $jobId, delayed: $delayed, reason: $reason, customerVisible: $customerVisible) { ${RESULT} } }`
+
+export const DRIVERS = gql`query Drivers($status: String, $search: String) { drivers(status: $status, search: $search) }`
+export const DRIVER = gql`query Driver($id: ID!) { driver(id: $id) }`
+export const SAVE_DRIVER = gql`mutation SaveDriver($id: ID, $input: JSON!, $vehiclePhoto: Upload) { saveDriver(id: $id, input: $input, vehiclePhoto: $vehiclePhoto) { ${RESULT} } }`
+export const SET_DRIVER_STATUS = gql`mutation SetDriverStatus($id: ID!, $status: String!) { setDriverStatus(id: $id, status: $status) { ${RESULT} } }`
+export const UPLOAD_DRIVER_IDENTITY = gql`mutation UploadDriverIdentity($driverId: ID!, $kind: String!, $licenceNumber: String, $file: Upload!) { uploadDriverIdentity(driverId: $driverId, kind: $kind, licenceNumber: $licenceNumber, file: $file) { ${RESULT} } }`
+export const SHIPMENTS = gql`query Shipments($status: String, $search: String, $delayed: Boolean, $page: Int, $limit: Int) { shipments(status: $status, search: $search, delayed: $delayed, page: $page, limit: $limit) { ${PAGE} } }`
+export const SHIPMENT = gql`query Shipment($id: ID!) { shipment(id: $id) }`
+export const PENDING_DELIVERY_CONFIRMATIONS = gql`query PendingDeliveryConfirmations { pendingDeliveryConfirmations }`
+export const CREATE_SHIPMENT = gql`mutation CreateShipment($orderId: ID!, $input: JSON!) { createShipment(orderId: $orderId, input: $input) { ${RESULT} } }`
+export const UPDATE_SHIPMENT = gql`mutation UpdateShipment($id: ID!, $input: JSON!) { updateShipment(id: $id, input: $input) { ${RESULT} } }`
+export const ADD_SHIPMENT_EVENT = gql`mutation AddShipmentEvent($shipmentId: ID!, $input: JSON!, $media: [Upload!]) { addShipmentEvent(shipmentId: $shipmentId, input: $input, media: $media) { ${RESULT} } }`
+export const CHANGE_SHIPMENT_ASSIGNMENT = gql`mutation ChangeShipmentAssignment($shipmentId: ID!, $driverId: ID, $vehicleRegistration: String, $vehicleType: String, $reason: String!, $customerVisible: Boolean) { changeShipmentAssignment(shipmentId: $shipmentId, driverId: $driverId, vehicleRegistration: $vehicleRegistration, vehicleType: $vehicleType, reason: $reason, customerVisible: $customerVisible) { ${RESULT} } }`
+export const CANCEL_SHIPMENT = gql`mutation CancelShipment($id: ID!, $reason: String!) { cancelShipment(id: $id, reason: $reason) { ${RESULT} } }`
+export const MARK_SHIPMENT_DELIVERED = gql`mutation MarkShipmentDelivered($id: ID!, $reason: String!) { markShipmentDelivered(id: $id, reason: $reason) { ${RESULT} } }`
+export const DELIVERY_ISSUES = gql`query DeliveryIssues($status: String, $search: String) { deliveryIssues(status: $status, search: $search) }`
+export const DELIVERY_ISSUE = gql`query DeliveryIssue($id: ID!) { deliveryIssue(id: $id) }`
+export const UPDATE_DELIVERY_ISSUE = gql`mutation UpdateDeliveryIssue($id: ID!, $input: JSON!) { updateDeliveryIssue(id: $id, input: $input) { ${RESULT} } }`
+export const ADD_DELIVERY_ISSUE_MESSAGE = gql`mutation AddDeliveryIssueMessage($id: ID!, $body: String!, $visibility: String) { addDeliveryIssueMessage(id: $id, body: $body, visibility: $visibility) { ${RESULT} } }`
+export const TODAY_BOARD = gql`query TodayBoard { todayBoard }`
+
+export const ORDER_DOCUMENT_LINK = gql`query OrderDocumentLink($id: ID!) { orderDocumentLink(id: $id) }`
+export const ADD_ORDER_DOCUMENT = gql`mutation AddOrderDocument($orderId: ID!, $input: JSON!, $file: Upload!) { addOrderDocument(orderId: $orderId, input: $input, file: $file) { ${RESULT} } }`
+export const REPLACE_ORDER_DOCUMENT = gql`mutation ReplaceOrderDocument($id: ID!, $input: JSON, $file: Upload!) { replaceOrderDocument(id: $id, input: $input, file: $file) { ${RESULT} } }`
+export const WITHDRAW_ORDER_DOCUMENT = gql`mutation WithdrawOrderDocument($id: ID!, $reason: String!) { withdrawOrderDocument(id: $id, reason: $reason) { ${RESULT} } }`
+export const SET_ORDER_DOCUMENT_VISIBILITY = gql`mutation SetOrderDocumentVisibility($id: ID!, $visibility: String!) { setOrderDocumentVisibility(id: $id, visibility: $visibility) { ${RESULT} } }`
+export const ORDER_PAYMENTS = gql`query OrderPayments($orderId: ID!) { orderPayments(orderId: $orderId) }`
+export const RECORD_PAYMENT = gql`mutation RecordPayment($orderId: ID!, $input: JSON!) { recordPayment(orderId: $orderId, input: $input) { ${RESULT} } }`
+export const VOID_PAYMENT = gql`mutation VoidPayment($id: ID!, $reason: String!) { voidPayment(id: $id, reason: $reason) { ${RESULT} } }`
+
+export const INVOICES = gql`query Invoices($documentType: String, $status: String, $search: String, $from: String, $to: String, $page: Int, $limit: Int) { invoices(documentType: $documentType, status: $status, search: $search, from: $from, to: $to, page: $page, limit: $limit) { ${PAGE} } }`
+export const INVOICE = gql`query Invoice($id: ID!) { invoice(id: $id) }`
+export const INVOICE_TEMPLATES = gql`query InvoiceTemplates { invoiceTemplates }`
+export const INVOICE_TEMPLATE_PREVIEW = gql`query InvoiceTemplatePreview($layout: JSON!) { invoiceTemplatePreview(layout: $layout) }`
+export const CREATE_INVOICE_DRAFT = gql`mutation CreateInvoiceDraft($orderId: ID!, $documentType: String, $templateId: ID) { createInvoiceDraft(orderId: $orderId, documentType: $documentType, templateId: $templateId) { ${RESULT} } }`
+export const UPDATE_INVOICE_DRAFT = gql`mutation UpdateInvoiceDraft($id: ID!, $input: JSON!) { updateInvoiceDraft(id: $id, input: $input) { ${RESULT} } }`
+export const ISSUE_INVOICE = gql`mutation IssueInvoice($id: ID!, $send: Boolean) { issueInvoice(id: $id, send: $send) { ${RESULT} } }`
+export const SEND_INVOICE = gql`mutation SendInvoice($id: ID!) { sendInvoice(id: $id) { ${RESULT} } }`
+export const CANCEL_INVOICE = gql`mutation CancelInvoice($id: ID!, $reason: String!) { cancelInvoice(id: $id, reason: $reason) { ${RESULT} } }`
+export const CREATE_CREDIT_NOTE = gql`mutation CreateCreditNote($invoiceId: ID!, $reason: String!, $items: [JSON!]) { createCreditNote(invoiceId: $invoiceId, reason: $reason, items: $items) { ${RESULT} } }`
+export const SAVE_INVOICE_TEMPLATE = gql`mutation SaveInvoiceTemplate($id: ID, $input: JSON!) { saveInvoiceTemplate(id: $id, input: $input) { ${RESULT} } }`
+export const UPDATE_INVOICE_SETTINGS = gql`mutation UpdateInvoiceSettings($value: JSON!) { updateInvoiceSettings(value: $value) { ${RESULT} } }`
+
+export const REWARD_SETTINGS = gql`query RewardSettings { rewardSettings }`
+export const CUSTOMER_POINTS = gql`query CustomerPoints($customerId: ID!) { customerPoints(customerId: $customerId) }`
+export const REWARD_CAMPAIGNS = gql`query RewardCampaigns { rewardCampaigns }`
+export const POINTS_REPORT = gql`query PointsReport { pointsReport }`
+export const POINTS_ABUSE_SIGNALS = gql`query PointsAbuseSignals { pointsAbuseSignals }`
+export const UPDATE_REWARD_SETTINGS = gql`mutation UpdateRewardSettings($value: JSON!) { updateRewardSettings(value: $value) { ${RESULT} } }`
+export const ADJUST_POINTS = gql`mutation AdjustPoints($customerId: ID!, $points: Int!, $reason: String!, $idempotencyKey: String!) { adjustPoints(customerId: $customerId, points: $points, reason: $reason, idempotencyKey: $idempotencyKey) { ${RESULT} } }`
+export const SAVE_REWARD_CAMPAIGN = gql`mutation SaveRewardCampaign($id: ID, $input: JSON!) { saveRewardCampaign(id: $id, input: $input) { ${RESULT} } }`
+
+export const BANNERS = gql`query Banners($placement: String) { banners(placement: $placement) }`
+export const SAVE_BANNER = gql`mutation SaveBanner($id: ID, $input: JSON!) { saveBanner(id: $id, input: $input) { ${RESULT} } }`
+export const SAVE_BANNER_VARIANT = gql`mutation SaveBannerVariant($bannerId: ID!, $input: JSON!, $image: Upload) { saveBannerVariant(bannerId: $bannerId, input: $input, image: $image) { ${RESULT} } }`
+export const DELETE_BANNER_VARIANT = gql`mutation DeleteBannerVariant($bannerId: ID!, $language: String!, $device: String!) { deleteBannerVariant(bannerId: $bannerId, language: $language, device: $device) { ${RESULT} } }`
+export const TRUST_STATS = gql`query TrustStats { trustStats }`
+export const CERTIFICATIONS = gql`query Certifications { certifications }`
+export const CONSENTED_DELIVERIES = gql`query ConsentedDeliveries { consentedDeliveries }`
+export const DELIVERY_PHOTOS = gql`query DeliveryPhotos { deliveryPhotos }`
+export const SAVE_TRUST_OVERRIDE = gql`mutation SaveTrustOverride($key: String!, $value: Int, $asOf: String, $note: String) { saveTrustOverride(key: $key, value: $value, asOf: $asOf, note: $note) { ${RESULT} } }`
+export const REFRESH_TRUST_STATS = gql`mutation RefreshTrustStats { refreshTrustStats { ${RESULT} } }`
+export const SAVE_CERTIFICATION = gql`mutation SaveCertification($id: ID, $input: JSON!, $document: Upload, $logo: Upload) { saveCertification(id: $id, input: $input, document: $document, logo: $logo) { ${RESULT} } }`
+export const ADD_DELIVERY_PHOTO = gql`mutation AddDeliveryPhoto($confirmationId: ID!, $input: JSON!, $image: Upload!) { addDeliveryPhoto(confirmationId: $confirmationId, input: $input, image: $image) { ${RESULT} } }`
+export const SET_DELIVERY_PHOTO_PUBLISHED = gql`mutation SetDeliveryPhotoPublished($id: ID!, $published: Boolean!) { setDeliveryPhotoPublished(id: $id, published: $published) { ${RESULT} } }`
+export const SET_REVIEW_FEATURED = gql`mutation SetReviewFeatured($reviewId: ID!, $featured: Boolean!) { setReviewFeatured(reviewId: $reviewId, featured: $featured) { ${RESULT} } }`

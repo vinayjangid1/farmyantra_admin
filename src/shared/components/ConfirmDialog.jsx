@@ -37,7 +37,7 @@ const ConfirmDialog = ({
       </Box>
     </DialogTitle>
     <DialogContent>
-      <Typography color="text.secondary">{message}</Typography>
+      <Typography color="text.secondary" component="div">{message}</Typography>
     </DialogContent>
     <DialogActions sx={{ px: 3, pb: 2.5, gap: 1 }}>
       <CustomButton label={cancelLabel} variant="outlined" onClick={onClose} disabled={loading} />

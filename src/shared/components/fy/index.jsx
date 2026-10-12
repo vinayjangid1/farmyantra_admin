@@ -19,7 +19,14 @@ const STATUS_COLORS = {
   draft: 'default', sent: 'secondary', declined: 'default', expired: 'error', superseded: 'default',
   // orders
   pending_confirmation: 'warning', confirmed: 'info', in_production: 'info', ready_to_dispatch: 'info', dispatched: 'secondary',
-  delivered: 'success', completed: 'success',
+  delivered: 'success', completed: 'success', awaiting_customer_confirmation: 'warning', partially_ready: 'info', partially_dispatched: 'secondary',
+  partially_delivered: 'secondary',
+  // fulfilment
+  not_started: 'default', on_hold: 'warning', skipped: 'default', in_shipment: 'secondary', planned: 'default', preparing: 'info', picked_up: 'secondary',
+  in_transit: 'secondary', reached_destination: 'warning', awaiting_customer: 'warning', received_ok: 'success', received_with_issues: 'warning',
+  not_received: 'error', admin_marked_delivered: 'info', resolved: 'success', open: 'error', issued: 'success', recorded: 'success', voided: 'default',
+  current: 'success', withdrawn: 'default', pending_customer: 'warning', declined_by_customer: 'default', paid: 'success', partial: 'warning',
+  not_recorded: 'default', refunded: 'default', reserved: 'info', consumed: 'success', released: 'default', scheduled: 'info', live: 'success', ended: 'default',
   // products / promotions / content
   published: 'success', archived: 'default', active: 'success', paused: 'warning',
   // reviews

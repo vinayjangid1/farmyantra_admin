@@ -13,7 +13,7 @@ import { CustomTable, CustomTextField, FilterDropdown, PageContainer, PageHeader
 import { StatusChip, usePagedQuery, Toolbar, KeyValue, humanize } from '@/shared/components/fy'
 import { useAction } from '@/shared/hooks/useAction'
 import { usePermissions } from '@/features/permissions'
-import { REVIEWS, REVIEW, MODERATE_REVIEW } from '@/services/admin.api'
+import { REVIEWS, REVIEW, MODERATE_REVIEW, SET_REVIEW_FEATURED } from '@/services/admin.api'
 import { reviewMediaUrl, mediaUrl } from '@/services/files'
 import { formatDate, formatRelativeTime } from '@/utils/dateFormatter'
 
@@ -79,6 +79,13 @@ const ReviewPanel = ({ id, onClose, onChanged }) => {
             <Grid item xs={6}><KeyValue label="Verification"><StatusChip status={r.verification_status} /></KeyValue></Grid>
             <Grid item xs={6}><KeyValue label="Moderation"><StatusChip status={r.moderation_status} /></KeyValue></Grid>
           </Grid>
+          {r.verification_source === 'delivery_confirmation' && <Alert severity="success">Verified automatically — the customer confirmed delivery of this product.</Alert>}
+          {canWrite && r.verification_status === 'verified' && r.moderation_status === 'approved' && (
+            <FormControlLabel
+              control={<Checkbox checked={Boolean(r.is_featured)} onChange={async (e) => { if (await run(SET_REVIEW_FEATURED, { reviewId: r.id, featured: e.target.checked })) { refetch(); onChanged() } }} />}
+              label="Feature as a testimonial on the home page"
+            />
+          )}
           {r.purchase_record ? (
             <Alert severity="success" action={<Button size="small" onClick={() => navigate(`/orders/${r.purchase_record.id}`)}>Open order</Button>}>
               Purchase found — order is {humanize(r.purchase_record.status)}.
