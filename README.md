@@ -17,6 +17,7 @@ Built on the Raddiwalla admin kit: same layout, theme engine, permissions contex
 | Doc | What |
 |---|---|
 | [`docs/FARMYANTRA_MASTER_SPEC.md`](docs/FARMYANTRA_MASTER_SPEC.md) | Full product + technical spec |
+| [`docs/agricultural_equipment_website_requirements.md`](docs/agricultural_equipment_website_requirements.md) | Business requirements baseline (v1.1) |
 | [`docs/ADMIN_ROADMAP.md`](docs/ADMIN_ROADMAP.md) | Structure, page inventory, status and next steps |
 
 ## Quick start
