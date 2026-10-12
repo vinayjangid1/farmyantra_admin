@@ -186,6 +186,7 @@ The `/contact` page creates a **contact message**, not an enquiry. It is meant f
 | `drivers` | Driver master: contact and vehicle details, vehicle photo (§27.2) | ✔ |
 | `driver_identity` | Driver ID photo and licence (private storage) (§27.2) | ✔ (privileged, including read) |
 | `order_documents` | Order, stage and shipment documents and their versions (§28) | ✔ |
+| `invoices` | Tax invoices, proforma invoices, credit notes, invoice templates and numbering settings; email PDFs to customers (§28.3) | ✔ |
 | `payments` | Record and void offline payments and refunds (§28.4) | ✔ |
 | `delivery_issues` | Delivery confirmation follow-up and delivery issue cases (§29) | ✔ |
 | `rewards` | Reward rules, campaigns, manual adjustments, abuse review (§30) | ✔ (privileged) |
@@ -209,7 +210,7 @@ The `/contact` page creates a **contact message**, not an enquiry. It is meant f
 | Product / Content Manager | Catalogue and website | products, product_translations, customisation, catalogues, content, reviews, banners: write; dashboard: read |
 | Production Supervisor *(new)* | Runs the workshop | manufacturing: write; orders, products, dashboard: read |
 | Logistics Coordinator *(new)* | Dispatch and delivery | shipments, drivers, order_documents, delivery_issues: write; orders, manufacturing, customers, dashboard: read |
-| Accounts Executive *(new)* | Bills and money | payments, order_documents: write; orders, customers, rewards, reports, dashboard: read |
+| Accounts Executive *(new)* | Bills and money | invoices, payments, order_documents: write; orders, customers, rewards, reports, dashboard: read |
 
 `driver_identity` and `rewards:write` are deliberately absent from every seeded role. A Super Admin grants them to named people.
 
@@ -893,9 +894,9 @@ Detailed per-repo checklists live in `docs/BACKEND_ROADMAP.md`, `docs/WEBSITE_RO
 |---|---|---|---|
 | D1 | When are redeemed points **consumed**? | (a) when the team confirms the order; (b) at confirmed delivery | **(b) at delivery.** Points are *reserved* at confirmation, so they can't be spent twice, but they are only consumed once the customer has the machine. A cancellation before delivery simply releases them, so no reversal accounting is needed |
 | D2 | When do **earned** points become usable? | Immediately at delivery; after a holding period | **Pending at confirmed delivery, available after `rewards.pending_days` = 7** with no open delivery issue. This limits abuse and refund reversals |
-| D3 | Point value and earn rate | Any | **1 point = ₹1 (100 paise); earn 1 % of the net pre-tax order value** (after offers and points); at most **10 % of the pre-tax order value** can be paid with points; minimum redemption 100 points; points expire 12 months after they become available. Model the cost with the accountant before launch |
+| D3 | Point value and earn rate | Any | **Decided: the point value and every rule are editable in Admin → Reward points** (`rewards:write`, privileged; audited). Defaults: 1 point = ₹1 (100 paise); earn 1 % of the net pre-tax order value (after offers and points); at most 10 % of the pre-tax order value can be paid with points; minimum redemption 100 points; points expire 12 months after they become available. A changed point value applies to new redemptions immediately; balances keep their point count. Model the cost with the accountant before launch |
 | D4 | GST treatment of points and how they show on invoices | Pre-tax discount; post-tax payment-like adjustment | **Show as a separate pre-tax discount line**, the same as offers. **Accountant sign-off required** before launch |
-| D5 | Who issues **tax invoices**? | Generated in FarmYantra; produced in accounting software and uploaded | **Upload from the accounting system (Tally / Zoho Books) at launch.** FarmYantra stores, versions and shares them (§28.3). Generating GST invoices in-system (FY numbering, e-invoicing/IRN thresholds) can follow after accountant review |
+| D5 | Who issues **tax invoices**? | Generated in FarmYantra; produced in accounting software and uploaded | **Decided: generated in FarmYantra.** Accounts staff (`invoices:write`) create tax invoices, proforma invoices and credit notes from an order, edit drafts, issue them with gap-free financial-year numbering, and email the PDF to the customer. Layout comes from editable invoice templates. Uploading documents from other systems remains possible (§28.1). E-invoicing/IRN is not built in this release — check the turnover threshold with the accountant |
 | D6 | Do item or configuration edits without a price change need customer confirmation? | Yes; no | **Yes.** Any change to items, configuration, quantity, price, discounts, points or terms needs confirmation. Delivery address and date changes do not, but the customer is notified |
 | D7 | May the team record a customer's **phone confirmation** of an admin-created order or revision? | Online only; phone allowed | **Allow, off by default** (`orders.allow_phone_confirmation`). When on, it requires a logged call and a reason, and the customer still gets an email and in-app copy with a "this isn't right" link |
 | D8 | Should one cart item with several units ship as one, or can units split across shipments? | Item-level; unit-level | **Unit-level quantities on `shipment_items`.** Workshops often finish 2 of 5 units first |
@@ -1253,11 +1254,26 @@ PDFs and images only, ≤ 20 MB, magic-byte check, private storage.
 
 The tracker has a **Documents** section per order, grouped by type, showing the current versions. Downloads go through `orderDocumentLink(documentId)`, which checks ownership and visibility and returns a **signed URL valid for 300 s** (§15.4). The PDF is never emailed as an attachment, apart from quotations (§8).
 
-### 28.3 Invoices
+### 28.3 Tax invoices (in-house, D5)
 
-At launch, **tax invoices come from the accounting system** (Tally / Zoho Books) and are uploaded here (D5). The form validates that an invoice number, date, amount and GSTIN context exist. It does **not** generate GST invoice numbers. A setting-gated in-system generator is a later option.
+FarmYantra generates GST documents itself. Permission feature **`invoices`** (read/write); the **Accounts Executive** role holds `invoices:write` and `payments:write`.
 
-> ⚠ **Accountant sign-off required before launch:** invoice format and numbering (financial-year series), e-invoicing/IRN applicability, treatment of reward-point discounts (D4) and freight.
+**Document types:** `tax_invoice`, `proforma_invoice` (allowed before confirmation), `credit_note` (only against an issued tax invoice).
+
+**Lifecycle:** `draft → issued → cancelled`.
+
+* **Create draft** from an order's active version: lines (description, configuration summary, HSN, quantity, unit, rate, discount, GST rate), delivery and installation as service lines (SAC from settings), reward points as a separate pre-tax line, supplier snapshot (legal name, address, GSTIN, state code from Settings → Business), buyer (name, address, optional GSTIN — validated with the checksum), ship-to, place of supply.
+* **Tax:** CGST + SGST when the supplier state equals the place of supply, otherwise IGST; computed per line and summarised by HSN and rate; optional rounding to the rupee with a round-off line; amount in words (Indian numbering).
+* **Edit draft:** buyer, place of supply, dates, lines, notes, terms, template. Drafts render with a DRAFT watermark.
+* **Issue:** assigns the next number `PREFIX + FY + / + sequence` (e.g. `INV/2026-27/0001`, max 16 characters), gap-free per type and financial year (April–March), never reused; locks the document; stores the PDF privately; shares it as a customer-visible order document. Requires the supplier GSTIN and HSN on every line.
+* **Send:** emails the PDF as an attachment (`invoice_issued`) — on issue (choice, or `invoicing.auto_send_on_issue`) or later ("email again"); sent count and time are recorded.
+* **Correct:** issued invoices are never edited. Raise a credit note (all or chosen lines), then cancel if needed; a tax invoice can only be cancelled after a credit note is issued against it.
+
+**Templates** (`invoice_templates`, Admin → Tax invoices → Templates): accent colour, logo, font size, titles per type, copy label, header note, column switches (SKU, HSN, discount), tax summary, amount in words, bank details/UPI for offline payment, declaration, terms, footer, signatory name/designation and signature image. One default; live PDF preview with sample data.
+
+**Settings** (`invoicing` section, `invoices:write`): prefixes per type, number digits, default due days, rounding, services SAC and GST rate, unit label, auto-send, state code.
+
+> ⚠ **Accountant sign-off required before launch:** format and numbering, e-invoicing/IRN applicability for the turnover, treatment of reward-point discounts (D4) and freight.
 
 ### 28.4 Offline payments (no online collection in this release)
 
@@ -1335,7 +1351,7 @@ On `received_ok`, `received_with_issues` or `admin_marked_delivered`, every deli
 
 ### 30.1 Settings (`rewards` section; changes need `rewards:write`, which is privileged)
 
-| Setting | Default (D3) |
+| Setting (editable in Admin → Reward points) | Default (D3) |
 |---|---|
 | `enabled` | false until Phase 7 sign-off |
 | `point_value_paise` | 100 (1 point = ₹1) |

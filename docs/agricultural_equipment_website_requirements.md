@@ -780,7 +780,7 @@ These are implementation details to finalise during planning rather than unresol
 6. When are redeemed points consumed? *Recommendation: reserve at order confirmation, consume at delivery, release on cancellation.*
 7. When do earned points become usable, and at what value and earn rate? *Recommendation: pending for 7 days after confirmed delivery; 1 point = ₹1; earn 1 %; redeem at most 10 % of an order; expire after 12 months.*
 8. How do points appear for GST? *Recommendation: a separate pre-tax discount line, subject to accountant sign-off.*
-9. Who issues tax invoices? *Recommendation: the accounting software at launch, uploaded and versioned in the platform.*
+9. Who issues tax invoices? *Decided: FarmYantra generates GST invoices, proforma invoices and credit notes in the admin panel, with templates, and emails them to customers (D5).*
 10. Do item or configuration changes without a price change need customer confirmation? *Recommendation: yes.*
 11. May staff record a customer's phone confirmation of an order? *Recommendation: allowed, off by default, with a logged call and reason.*
 12. Video handling and large uploads from phones. *Recommendation: transcode to H.264 MP4 in the background; direct-to-storage uploads for large videos.*

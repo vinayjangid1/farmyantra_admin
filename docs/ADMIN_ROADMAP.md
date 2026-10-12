@@ -105,6 +105,10 @@ src/
 - [x] Every page in §2, verified in Playwright against the live API (pages render, no console errors; write flows for category, product with pricing/translations/specs/image/colours/add-ons/publish, offer with coupons and cart preview, catalogue, content page, team member, role, settings)
 - [x] Production build with vendor chunks (react / apollo / mui) and lazy pages
 
+### Done: v2.1 screens
+
+Order screen with tabs (items & versions, production, shipments, delivery & issues, invoices/payments/documents); create order for a customer; production board and stage templates; shipments, delivery queue, drivers (private ID files); **Tax invoices** (list, draft editor, issue & email, credit notes, template editor with PDF preview, numbering & tax settings); **Reward points** (editable point value and rules, campaigns, balances & adjustments, report); banners; trust & proof; unsent request lists; product "Stock & lead time" tab and option lead-time impacts; phone-first "Today" page.
+
 ### Next: Phase 4 (launch hardening)
 
 - [ ] Commit the Playwright walk-through as `tests/e2e/admin.spec.js` and run it in CI against a seeded API
