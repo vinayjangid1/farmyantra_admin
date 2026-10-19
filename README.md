@@ -24,7 +24,7 @@ Built on the Raddiwalla admin kit: same layout, theme engine, permissions contex
 
 ```bash
 npm install
-npm run dev            # http://localhost:5200/admin/farmyantra/ (expects farmyantra_backend on :5100)
+npm run dev            # http://localhost:5200/admin/ (expects farmyantra_backend on :5100)
 npm run lint && npm run build
 ```
 

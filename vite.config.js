@@ -3,7 +3,7 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
 /** Public path the admin panel is served from. Must match the Router basename. */
-const BASE_PATH = '/admin/farmyantra/'
+const BASE_PATH = '/admin/'
 
 /**
  * Console methods that are safe to strip from production builds. Marking them
