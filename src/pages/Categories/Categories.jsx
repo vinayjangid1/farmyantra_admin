@@ -102,8 +102,9 @@ const Categories = () => {
             <Stack direction="row" spacing={2} alignItems="center">
               {(image || draft.image_url) && <Avatar variant="rounded" src={image ? URL.createObjectURL(image) : mediaUrl(draft.image_url)} sx={{ width: 64, height: 64 }} />}
               <Button component="label" variant="outlined">{draft.image_url || image ? 'Replace image' : 'Upload image'}
-                <input hidden type="file" accept="image/jpeg,image/png,image/webp" onChange={(e) => setImage(e.target.files?.[0] || null)} />
+                <input hidden type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={(e) => setImage(e.target.files?.[0] || null)} />
               </Button>
+              <Typography variant="caption" color="text.secondary">JPEG, PNG or WebP up to 2 MB, or an animated GIF up to 8 MB</Typography>
             </Stack>
             <I18nField label="SEO title" value={draft.seo_title_i18n} onChange={(v) => patch({ seo_title_i18n: v })} />
             <I18nField label="SEO description" value={draft.seo_description_i18n} onChange={(v) => patch({ seo_description_i18n: v })} multiline rows={2} />
