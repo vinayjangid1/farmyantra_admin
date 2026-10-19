@@ -27,6 +27,8 @@ export const DELETE_ROLE = gql`mutation DeleteRole($id: ID!) { deleteRole(id: $i
 export const AUDIT_LOGS = gql`query AuditLogs($entity: String, $entityId: String, $action: String, $search: String, $from: String, $to: String, $page: Int, $limit: Int) { auditLogs(entity: $entity, entityId: $entityId, action: $action, search: $search, from: $from, to: $to, page: $page, limit: $limit) { ${PAGE} } }`
 export const ADMIN_NOTIFICATIONS = gql`query AdminNotifications { adminNotifications }`
 export const MARK_ADMIN_NOTIFICATIONS_READ = gql`mutation MarkAdminNotificationsRead($ids: [ID!]!) { markAdminNotificationsRead(ids: $ids) { ${RESULT} } }`
+export const REGISTER_PUSH_TOKEN = gql`mutation RegisterPushToken($token: String!) { registerPushToken(token: $token) { ${RESULT} } }`
+export const UNREGISTER_PUSH_TOKEN = gql`mutation UnregisterPushToken($token: String!) { unregisterPushToken(token: $token) { ${RESULT} } }`
 
 // ── Dashboard & reports ─────────────────────────────────
 export const DASHBOARD = gql`query Dashboard { dashboard }`

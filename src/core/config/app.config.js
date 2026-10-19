@@ -19,4 +19,5 @@ export const LOGIN_URL = `${BASE_URL.replace(/\/$/, '')}${ROUTES.login}`
 export const STORAGE_KEYS = {
   authToken: 'fy_admin_auth_token',
   themeMode: 'fy-admin-theme-mode',
+  pushToken: 'fy_admin_push_token',
 }
