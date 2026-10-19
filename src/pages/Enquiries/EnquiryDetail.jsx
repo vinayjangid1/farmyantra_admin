@@ -11,7 +11,7 @@ import {
   Alert, Box, Button, Card, CardContent, Chip, Dialog, DialogActions, DialogContent, DialogTitle, Divider, Grid, Link, MenuItem,
   Stack, Tab, Tabs, TextField, Typography,
 } from '@mui/material'
-import { ArrowLeft, PhoneCall, FileText, Send, Lock, RefreshCw, UserPlus, Repeat } from 'lucide-react'
+import { ArrowLeft, PhoneCall, FileText, Send, Lock, RefreshCw, UserPlus, Repeat, ShoppingCart } from 'lucide-react'
 
 import { LoadingState, ErrorState, PageContainer } from '@/shared/components'
 import { StatusChip, humanize, KeyValue } from '@/shared/components/fy'
@@ -23,12 +23,16 @@ import {
 } from '@/services/admin.api'
 import { formatPaise } from '@/utils/money'
 import { formatDate, formatRelativeTime } from '@/utils/dateFormatter'
+import { requestTypeMeta } from './requestTypes'
+import AcceptOrderRequestDialog from './AcceptOrderRequestDialog'
 
 const OUTCOMES = [
   ['connected', 'Connected — spoke to the customer'], ['no_answer', 'No answer'], ['busy', 'Busy'],
   ['switched_off', 'Switched off / not reachable'], ['wrong_number', 'Wrong number'], ['call_back_later', 'Asked to call back later'],
 ]
 const NEEDS_NOTE = ['rejected', 'clarification_required', 'cancelled']
+const CLOSED = ['closed', 'cancelled', 'rejected', 'converted_to_order']
+const SWITCH_TO = { callback: 'quotation', quotation: 'callback', both: 'callback', order: 'quotation' }
 
 const configLines = (configuration = {}) => {
   const lines = []
@@ -46,6 +50,7 @@ const EnquiryDetail = () => {
   const { hasPermission } = usePermissions()
   const canWrite = hasPermission('admin:enquiries:write')
   const canQuote = hasPermission('admin:quotations:write')
+  const canOrder = hasPermission('admin:orders:write')
   const { data, loading, error, refetch } = useQuery(ENQUIRY, { variables: { id }, fetchPolicy: 'cache-and-network' })
   const members = useQuery(ASSIGNABLE_MEMBERS, { skip: !canWrite })
   const { run, loading: busy } = useAction()
@@ -56,10 +61,14 @@ const EnquiryDetail = () => {
   const [message, setMessage] = useState('')
   const [visibility, setVisibility] = useState('customer')
   const [tab, setTab] = useState(0)
+  const [accepting, setAccepting] = useState(false)
 
   if (loading && !data) return <LoadingState message="Loading enquiry…" />
   if (error) return <ErrorState title="Could not load enquiry" message={error.message} />
   const e = data.enquiry
+  const type = requestTypeMeta(e.request_type)
+  const TypeIcon = type.icon
+  const isOpenOrderRequest = e.request_type === 'order' && !CLOSED.includes(e.status)
 
   const act = async (mutation, variables, success) => {
     const result = await run(mutation, variables, { success })
@@ -93,7 +102,7 @@ const EnquiryDetail = () => {
               <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap" useFlexGap>
                 <Typography variant="h5" sx={{ fontWeight: 800 }}>{e.enquiry_number}</Typography>
                 <StatusChip status={e.status} />
-                <Chip size="small" icon={e.request_type === 'callback' ? <PhoneCall size={14} /> : <FileText size={14} />} label={e.request_type === 'callback' ? 'Wants a call-back' : 'Wants a quotation'} color={e.request_type === 'callback' ? 'warning' : 'info'} />
+                <Chip size="small" icon={<TypeIcon size={14} />} label={type.long} color={type.color} />
                 {e.language === 'hi' && <Chip size="small" label="हिंदी" />}
               </Stack>
               <Typography variant="body2" color="text.secondary">
@@ -103,6 +112,11 @@ const EnquiryDetail = () => {
             </Box>
             {canWrite && (
               <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+                {canOrder && isOpenOrderRequest && (
+                  <Button variant="contained" color="success" startIcon={<ShoppingCart size={16} />} onClick={() => setAccepting(true)} disabled={busy || e.has_price_on_request}>
+                    Accept order
+                  </Button>
+                )}
                 {(canQuote && ['submitted', 'under_review', 'contacted', 'clarification_required', 'accepted', 'quotation_sent', 'customer_declined', 'customer_accepted'].includes(e.status)) && (
                   <Button variant="contained" startIcon={<FileText size={16} />} onClick={createQuotation} disabled={busy}>
                     {e.quotations.some((q) => q.status !== 'cancelled') ? 'Open quotation' : 'Prepare quotation'}
@@ -119,12 +133,19 @@ const EnquiryDetail = () => {
                   <MenuItem value="">Unassigned</MenuItem>
                   {(members.data?.assignableMembers || []).map((m) => <MenuItem key={m.id} value={m.id}>{m.name}</MenuItem>)}
                 </TextField>
-                <Button variant="outlined" startIcon={<Repeat size={15} />} onClick={() => act(SET_REQUEST_TYPE, { id, requestType: e.request_type === 'callback' ? 'quotation' : 'callback' }, 'Request type changed')} disabled={busy}>
-                  Switch to {e.request_type === 'callback' ? 'quotation' : 'call-back'}
+                <Button variant="outlined" startIcon={<Repeat size={15} />} onClick={() => act(SET_REQUEST_TYPE, { id, requestType: SWITCH_TO[e.request_type] || 'callback' }, 'Request type changed')} disabled={busy}>
+                  Switch to {requestTypeMeta(SWITCH_TO[e.request_type] || 'callback').label.toLowerCase()}
                 </Button>
               </Stack>
             )}
           </Stack>
+          {isOpenOrderRequest && (
+            <Alert severity={e.has_price_on_request ? 'warning' : 'success'} sx={{ mt: 2 }}>
+              {e.has_price_on_request
+                ? 'This order request has items without a fixed price. Switch it to a quotation and send one instead.'
+                : 'The customer wants to order at these prices. Accept it to create the order, or move it to “Rejected” with a reason.'}
+            </Alert>
+          )}
         </CardContent>
       </Card>
 
@@ -204,7 +225,7 @@ const EnquiryDetail = () => {
         </Grid>
 
         <Grid item xs={12} lg={5}>
-          {canWrite && e.request_type === 'callback' && !['closed', 'cancelled', 'rejected', 'converted_to_order'].includes(e.status) && (
+          {canWrite && ['callback', 'both'].includes(e.request_type) && !CLOSED.includes(e.status) && (
             <Card sx={{ mb: 2, borderLeft: 4, borderColor: 'warning.main' }}>
               <CardContent>
                 <Typography variant="h6" sx={{ mb: 1.5, display: 'flex', gap: 1, alignItems: 'center' }}><PhoneCall size={18} /> Log a call</Typography>
@@ -291,6 +312,8 @@ const EnquiryDetail = () => {
           </Card>
         </Grid>
       </Grid>
+
+      {accepting && <AcceptOrderRequestDialog enquiry={e} open={accepting} onClose={() => setAccepting(false)} />}
 
       <Dialog open={Boolean(statusDialog)} onClose={() => setStatusDialog(null)} maxWidth="sm" fullWidth>
         <DialogTitle>Move to “{humanize(statusDialog)}”</DialogTitle>

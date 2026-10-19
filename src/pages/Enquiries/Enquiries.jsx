@@ -2,7 +2,7 @@
 import { useMemo, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { Box, Chip, FormControlLabel, Switch, Tooltip, Typography } from '@mui/material'
-import { PhoneCall, FileText, AlertCircle } from 'lucide-react'
+import { AlertCircle } from 'lucide-react'
 
 import { CustomTable, CustomTextField, FilterDropdown, PageContainer, PageHeader, ExportButton, ErrorState } from '@/shared/components'
 import { StatusChip, usePagedQuery, Toolbar } from '@/shared/components/fy'
@@ -10,6 +10,7 @@ import { ENQUIRIES } from '@/services/admin.api'
 import { usePermissions } from '@/features/permissions'
 import { formatPaise } from '@/utils/money'
 import { formatDate, formatRelativeTime } from '@/utils/dateFormatter'
+import { REQUEST_TYPE_OPTIONS, requestTypeMeta } from './requestTypes'
 
 const STATUS_GROUPS = [
   { key: 'open', label: 'Open', statuses: ['submitted', 'under_review', 'contacted', 'clarification_required', 'accepted'] },
@@ -60,7 +61,10 @@ const Enquiries = () => {
     },
     {
       id: 'request_type', label: 'Wants', minWidth: 120,
-      format: (v) => <Chip size="small" icon={v === 'callback' ? <PhoneCall size={14} /> : <FileText size={14} />} label={v === 'callback' ? 'Call-back' : 'Quotation'} color={v === 'callback' ? 'warning' : 'info'} variant="outlined" />,
+      format: (v) => {
+        const { icon: Icon, label, color } = requestTypeMeta(v)
+        return <Chip size="small" icon={<Icon size={14} />} label={label} color={color} variant="outlined" />
+      },
     },
     {
       id: 'contact_name', label: 'Customer', minWidth: 170,
@@ -84,7 +88,7 @@ const Enquiries = () => {
     },
     {
       id: 'callback_due_at', label: 'Call by', minWidth: 120,
-      format: (v, row) => (row.request_type === 'callback' && v ? (
+      format: (v, row) => (['callback', 'both'].includes(row.request_type) && v ? (
         <Typography variant="body2" color={new Date(v) < new Date() && ['submitted', 'under_review', 'clarification_required'].includes(row.status) ? 'error' : 'text.primary'}>
           {formatDate(v, 'short')}
         </Typography>
@@ -103,7 +107,7 @@ const Enquiries = () => {
       </Box>
       <Toolbar>
         <CustomTextField label="Search" placeholder="Number, name, phone, city…" value={search} onChange={(e) => { setSearch(e.target.value); list.resetPage() }} sx={{ minWidth: 260 }} />
-        <FilterDropdown label="Request type" options={[{ value: 'callback', label: 'Call-back' }, { value: 'quotation', label: 'Quotation' }]} value={requestType} onChange={(v) => { setRequestType(v); list.resetPage() }} allLabel="All types" />
+        <FilterDropdown label="Request type" options={REQUEST_TYPE_OPTIONS} value={requestType} onChange={(v) => { setRequestType(v); list.resetPage() }} allLabel="All types" />
         <FilterDropdown label="Assigned" options={[{ value: 'me', label: 'Assigned to me' }, { value: 'unassigned', label: 'Unassigned' }]} value={assigned} onChange={(v) => { setAssigned(v); list.resetPage() }} allLabel="Anyone" />
         <FormControlLabel control={<Switch checked={overdue} onChange={(e) => { setOverdue(e.target.checked); list.resetPage() }} />} label="Overdue call-backs" />
         <Box sx={{ flex: 1 }} />

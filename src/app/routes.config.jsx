@@ -1,7 +1,7 @@
 import { lazy } from 'react'
 import {
   LayoutDashboard, PhoneCall, FileText, Package, Users, Boxes, FolderTree, Star, Tag, BookOpen, Globe, Mail, UserCog,
-  History, Settings, BarChart3, ListChecks, Sun, Factory, Truck, PackageCheck, Receipt, Gift, Image, ShoppingCart, Layers, IdCard,
+  History, Settings, BarChart3, ListChecks, Sun, Factory, Truck, PackageCheck, Receipt, Gift, Image, ShoppingCart, Layers, IdCard, Wallet,
 } from 'lucide-react'
 
 import Login from '@/pages/Login/Login'
@@ -35,6 +35,7 @@ const Shipments = lazy(() => import('@/pages/Logistics/Shipments'))
 const DeliveryQueue = lazy(() => import('@/pages/Logistics/DeliveryQueue'))
 const Drivers = lazy(() => import('@/pages/Logistics/Drivers'))
 const Invoices = lazy(() => import('@/pages/Invoices/Invoices'))
+const Payments = lazy(() => import('@/pages/Payments/Payments'))
 const InvoiceEditor = lazy(() => import('@/pages/Invoices/InvoiceEditor'))
 const Rewards = lazy(() => import('@/pages/Rewards/Rewards'))
 const WebsiteBuilder = lazy(() => import('@/pages/Website/WebsiteBuilder'))
@@ -75,6 +76,7 @@ export const navigationConfig = [
     icon: Receipt,
     children: [
       { title: 'Tax invoices', path: '/invoices', icon: Receipt, permission: read('invoices') },
+      { title: 'Payments', path: '/payments', icon: Wallet, permission: read('payments') },
       { title: 'Reward points', path: '/rewards', icon: Gift, permission: read('rewards') },
     ],
   },
@@ -128,6 +130,7 @@ export const protectedRoutes = [
   { path: '/deliveries', element: DeliveryQueue, permission: read('delivery_issues') },
   { path: '/drivers', element: Drivers, permission: read('drivers') },
   { path: '/invoices', element: Invoices, permission: read('invoices') },
+  { path: '/payments', element: Payments, permission: read('payments') },
   { path: '/invoices/:id', element: InvoiceEditor, permission: read('invoices') },
   { path: '/rewards', element: Rewards, permission: read('rewards') },
   { path: '/website', element: WebsiteBuilder, permission: read('content') },
