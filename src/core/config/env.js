@@ -21,7 +21,7 @@ export const IS_DEV = rawEnv.DEV === true
 export const IS_PROD = rawEnv.PROD === true
 
 /**
- * Public base path the app is served from, e.g. `/admin/farmyantra/`.
+ * Public base path the app is served from, e.g. `/admin/`.
  * Derived from Vite's `base` option so it is defined in exactly one place
  * (vite.config.js) and stays in sync with the router basename.
  */

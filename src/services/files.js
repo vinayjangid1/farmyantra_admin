@@ -13,10 +13,11 @@ const withBusy = (fn) => async (...args) => {
   }
 }
 
-const apiOrigin = () => new URL(GRAPHQL_ENDPOINT).origin
+/** API base URL, including any path prefix (e.g. https://farmyantra.in/api). */
+const apiBase = () => GRAPHQL_ENDPOINT.replace(/\/admin\/graphql\/?$/, '')
 
 export const openQuotationPdf = withBusy(async (versionId, { download = false, filename = 'quotation.pdf' } = {}) => {
-  const res = await fetch(`${apiOrigin()}/files/quotations/${versionId}?scope=admin`, { headers: { Authorization: `Bearer ${getToken()}` } })
+  const res = await fetch(`${apiBase()}/files/quotations/${versionId}?scope=admin`, { headers: { Authorization: `Bearer ${getToken()}` } })
   if (!res.ok) throw new Error('Could not load the PDF')
   const url = URL.createObjectURL(await res.blob())
   if (download) {
@@ -31,12 +32,12 @@ export const openQuotationPdf = withBusy(async (versionId, { download = false, f
 })
 
 export const reviewMediaUrl = async (mediaId) => {
-  const res = await fetch(`${apiOrigin()}/files/review-media/${mediaId}`, { headers: { Authorization: `Bearer ${getToken()}` } })
+  const res = await fetch(`${apiBase()}/files/review-media/${mediaId}`, { headers: { Authorization: `Bearer ${getToken()}` } })
   if (!res.ok) throw new Error('Could not load media')
   return URL.createObjectURL(await res.blob())
 }
 
-export const publicFileUrl = (path) => `${apiOrigin()}${path}`
+export const publicFileUrl = (path) => `${apiBase()}${path}`
 
 /** Stored media URLs are absolute in production; tolerate relative ones in dev. */
 export const mediaUrl = (url) => (!url ? '' : /^https?:\/\//.test(url) ? url : publicFileUrl(url.startsWith('/') ? url : `/${url}`))
@@ -56,7 +57,7 @@ const openBlob = (blob, { download = false, filename = 'file.pdf' } = {}) => {
 
 /** Invoice / credit note PDF (drafts carry a DRAFT watermark). */
 export const openInvoicePdf = withBusy(async (invoiceId, { download = false, filename = 'invoice.pdf' } = {}) => {
-  const res = await fetch(`${apiOrigin()}/files/invoices/${invoiceId}?scope=admin`, { headers: { Authorization: `Bearer ${getToken()}` } })
+  const res = await fetch(`${apiBase()}/files/invoices/${invoiceId}?scope=admin`, { headers: { Authorization: `Bearer ${getToken()}` } })
   if (!res.ok) throw new Error('Could not load the PDF')
   openBlob(await res.blob(), { download, filename })
 })
@@ -69,7 +70,7 @@ export const openBase64Pdf = ({ base64, filename = 'preview.pdf' }) => {
 
 /** Driver ID files: staff with driver_identity:read only; every view is audited. */
 export const driverIdentityUrl = async (fileId) => {
-  const res = await fetch(`${apiOrigin()}/files/driver-identity/${fileId}`, { headers: { Authorization: `Bearer ${getToken()}` } })
+  const res = await fetch(`${apiBase()}/files/driver-identity/${fileId}`, { headers: { Authorization: `Bearer ${getToken()}` } })
   if (!res.ok) throw new Error('Could not load the file')
   return URL.createObjectURL(await res.blob())
 }
