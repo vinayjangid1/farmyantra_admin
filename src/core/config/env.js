@@ -47,7 +47,7 @@ export const getEnvErrors = () => {
 
   for (const key of REQUIRED_KEYS) {
     if (!read(key)) {
-      errors.push(`${key} is not set. Copy .env.example and fill it in.`)
+      errors.push(`${key} is not set. Set it in .env.development / .env.production.`)
     }
   }
 
