@@ -59,9 +59,15 @@ const Payments = () => {
       </Grid>
 
       <Toolbar>
-        <CustomTextField label="Search" placeholder="Order, customer, phone, UTR…" value={search} onChange={(e) => reset(setSearch)(e.target.value)} sx={{ minWidth: 240 }} />
-        <CustomTextField label="From" type="date" InputLabelProps={{ shrink: true }} value={from} onChange={(e) => reset(setFrom)(e.target.value)} />
-        <CustomTextField label="To" type="date" InputLabelProps={{ shrink: true }} value={to} onChange={(e) => reset(setTo)(e.target.value)} />
+        <Box sx={{ width: { xs: '100%', sm: 280 } }}>
+          <CustomTextField label="Search" placeholder="Order, customer, phone, UTR…" value={search} onChange={(e) => reset(setSearch)(e.target.value)} />
+        </Box>
+        <Box sx={{ width: { xs: '100%', sm: 170 } }}>
+          <CustomTextField label="From" type="date" InputLabelProps={{ shrink: true }} value={from} onChange={(e) => reset(setFrom)(e.target.value)} />
+        </Box>
+        <Box sx={{ width: { xs: '100%', sm: 170 } }}>
+          <CustomTextField label="To" type="date" InputLabelProps={{ shrink: true }} value={to} onChange={(e) => reset(setTo)(e.target.value)} />
+        </Box>
         <FilterDropdown label="For" value={purpose} onChange={reset(setPurpose)} allLabel="Any purpose" options={PAYMENT_PURPOSES.map((v) => ({ value: v, label: humanize(v) }))} />
         <FilterDropdown label="Mode" value={mode} onChange={reset(setMode)} allLabel="All modes" options={PAYMENT_MODES.map((v) => ({ value: v, label: humanize(v) }))} />
         <FilterDropdown label="Type" value={entryType} onChange={reset(setEntryType)} allLabel="Payments & refunds" options={[{ value: 'payment', label: 'Payments' }, { value: 'refund', label: 'Refunds' }]} />
