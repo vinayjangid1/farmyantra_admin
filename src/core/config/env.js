@@ -66,3 +66,15 @@ export const getEnvErrors = () => {
 
 /** Public website origin, used for "View on website" links. Optional. */
 export const WEBSITE_URL = (read('VITE_WEBSITE_URL') || '').replace(/\/$/, '')
+
+/** Firebase web config for desktop push alerts. Optional: push is off without it. */
+export const FIREBASE_CONFIG = {
+  apiKey: read('VITE_FIREBASE_API_KEY'),
+  authDomain: read('VITE_FIREBASE_AUTH_DOMAIN'),
+  projectId: read('VITE_FIREBASE_PROJECT_ID'),
+  messagingSenderId: read('VITE_FIREBASE_MESSAGING_SENDER_ID'),
+  appId: read('VITE_FIREBASE_APP_ID'),
+}
+
+/** Public VAPID key for Firebase Cloud Messaging web push. */
+export const FIREBASE_VAPID_KEY = read('VITE_FIREBASE_VAPID_KEY')

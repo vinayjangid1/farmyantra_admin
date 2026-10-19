@@ -16,7 +16,7 @@ import {
   RECORD_PAYMENT, VOID_PAYMENT, CREATE_INVOICE_DRAFT, INVOICE_TEMPLATES,
 } from '@/services/admin.api'
 import { openInvoicePdf, openSignedLink, submissionKey } from '@/services/files'
-import { DOC_TYPES, PAYMENT_MODES } from '@/features/fulfilment/utils'
+import { DOC_TYPES, PAYMENT_MODES, PAYMENT_PURPOSES } from '@/features/fulfilment/utils'
 import { formatPaise } from '@/utils/money'
 import { formatDate } from '@/utils/dateFormatter'
 
@@ -151,7 +151,9 @@ export const PaymentsSection = ({ order, refetch }) => {
   const [voiding, setVoiding] = useState(null)
   const [form, setForm] = useState({})
   const s = order.payment_summary
-  const start = () => { setForm({ entry_type: 'payment', mode: 'upi', paid_on: new Date().toISOString().slice(0, 10), amount_paise: s.outstanding_paise || null, idempotency_key: submissionKey() }); setOpen(true) }
+  const live = order.payments.filter((p) => p.status === 'recorded' && p.entry_type === 'payment')
+  const defaultPurpose = live.length ? 'instalment' : 'advance'
+  const start = () => { setForm({ entry_type: 'payment', purpose: defaultPurpose, mode: 'upi', paid_on: new Date().toISOString().slice(0, 10), amount_paise: s.outstanding_paise || null, idempotency_key: submissionKey() }); setOpen(true) }
   const save = async () => {
     if (voiding) {
       if (await run(VOID_PAYMENT, { id: voiding.id, reason: form.reason })) { setVoiding(null); setForm({}); refetch() }
@@ -174,9 +176,16 @@ export const PaymentsSection = ({ order, refetch }) => {
         </Grid>
         {order.payments.map((p) => (
           <Stack key={p.id} direction="row" spacing={1} alignItems="center" sx={{ py: 0.75, borderBottom: 1, borderColor: 'divider', opacity: p.status === 'voided' ? 0.5 : 1, flexWrap: 'wrap' }}>
-            <Typography variant="body2" sx={{ fontWeight: 700, flex: 1 }}>{p.payment_number} · {p.entry_type === 'refund' ? 'Refund' : humanize(p.mode)}{p.reference ? ` · ${p.reference}` : ''}</Typography>
+            <Box sx={{ flex: 1, minWidth: 180 }}>
+              <Typography variant="body2" sx={{ fontWeight: 700 }}>
+                {p.payment_number} · {p.entry_type === 'refund' ? 'Refund' : humanize(p.purpose || 'instalment')} · {humanize(p.mode)}
+              </Typography>
+              <Typography variant="caption" color="text.secondary">
+                {[p.reference, p.received_into && `into ${p.received_into}`, p.recorded_by_name && `by ${p.recorded_by_name}`, p.note].filter(Boolean).join(' · ')}
+              </Typography>
+            </Box>
             <Typography variant="body2">{p.entry_type === 'refund' ? '−' : ''}{formatPaise(p.amount_paise)}</Typography>
-            <Typography variant="caption" color="text.secondary">{p.paid_on}{p.status === 'voided' ? ` · voided: ${p.void_reason}` : ''}</Typography>
+            <Typography variant="caption" color="text.secondary">{formatDate(p.paid_on, 'short')}{p.status === 'voided' ? ` · voided: ${p.void_reason}` : ''}</Typography>
             {canWrite && p.status === 'recorded' && <Button size="small" color="error" onClick={() => { setForm({}); setVoiding(p) }}>Void</Button>}
           </Stack>
         ))}
@@ -190,12 +199,18 @@ export const PaymentsSection = ({ order, refetch }) => {
               <MenuItem value="payment">Payment received</MenuItem>
               <MenuItem value="refund">Refund paid</MenuItem>
             </TextField>
+            {(form.entry_type || 'payment') === 'payment' && (
+              <TextField select size="small" label="For" value={form.purpose || defaultPurpose} onChange={(e) => setForm({ ...form, purpose: e.target.value })}>
+                {PAYMENT_PURPOSES.map((p) => <MenuItem key={p} value={p}>{p === 'final' ? 'Final / balance payment' : humanize(p)}</MenuItem>)}
+              </TextField>
+            )}
             <MoneyField label="Amount" paise={form.amount_paise} onChange={(v) => setForm({ ...form, amount_paise: v })} />
             <TextField select size="small" label="Mode" value={form.mode || 'upi'} onChange={(e) => setForm({ ...form, mode: e.target.value })}>
               {PAYMENT_MODES.map((m) => <MenuItem key={m} value={m}>{humanize(m)}</MenuItem>)}
             </TextField>
             <TextField size="small" type="date" label="Date" InputLabelProps={{ shrink: true }} value={form.paid_on || ''} onChange={(e) => setForm({ ...form, paid_on: e.target.value })} />
             <TextField size="small" label="Reference (UTR / cheque / DD number)" value={form.reference || ''} onChange={(e) => setForm({ ...form, reference: e.target.value })} />
+            <TextField size="small" label="Received into (our account)" placeholder="e.g. HDFC current a/c ••1234" value={form.received_into || ''} onChange={(e) => setForm({ ...form, received_into: e.target.value })} />
             <TextField size="small" multiline minRows={2} label="Note" value={form.note || ''} onChange={(e) => setForm({ ...form, note: e.target.value })} />
           </Stack>
         )}

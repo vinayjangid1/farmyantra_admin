@@ -17,6 +17,10 @@ export const SHIPMENT_EVENTS = [
 ]
 
 export const PAYMENT_MODES = ['cash', 'upi', 'bank_transfer', 'cheque', 'demand_draft', 'card_offline', 'other']
+/** What a payment was for; an order is often paid as an advance plus instalments. */
+export const PAYMENT_PURPOSES = ['advance', 'instalment', 'final', 'other']
+/** Modes the API requires a reference (UTR / cheque / DD number) for. */
+export const REFERENCE_MODES = ['upi', 'bank_transfer', 'cheque', 'demand_draft']
 export const DOC_TYPES = ['tax_invoice', 'proforma_invoice', 'credit_note', 'payment_receipt', 'eway_bill', 'lorry_receipt', 'warranty_card', 'user_manual', 'qc_report', 'delivery_challan', 'other']
 
 export const ISSUE_STATUSES = ['open', 'in_progress', 'awaiting_customer', 'resolved', 'closed']

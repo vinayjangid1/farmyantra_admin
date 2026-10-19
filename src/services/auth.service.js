@@ -1,6 +1,7 @@
 import { LOGIN_URL, STORAGE_KEYS } from '@/core/config/app.config'
 import { getItem, removeItem, setItem } from '@/lib/storage'
 import { logger } from '@/lib/logger'
+import { forgetPushToken } from '@/services/push.service'
 
 /**
  * Admin session handling.
@@ -122,6 +123,7 @@ export const isAuthenticated = () => Boolean(getToken())
  * already on the login screen, which prevents redirect loops.
  */
 export const logout = () => {
+  forgetPushToken()
   removeToken()
 
   const alreadyOnLogin = window.location.pathname === LOGIN_URL

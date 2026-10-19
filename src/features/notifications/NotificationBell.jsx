@@ -1,11 +1,12 @@
 /** Navbar bell: admin notifications (new call-backs, accepted quotations, contact messages…). */
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useMutation, useQuery } from '@apollo/client'
 import { Badge, Box, IconButton, List, ListItemButton, ListItemText, Popover, Typography, Button } from '@mui/material'
-import { Bell } from 'lucide-react'
+import { Bell, BellRing } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 
-import { ADMIN_NOTIFICATIONS, MARK_ADMIN_NOTIFICATIONS_READ } from '@/services/admin.api'
+import { ADMIN_NOTIFICATIONS, MARK_ADMIN_NOTIFICATIONS_READ, REGISTER_PUSH_TOKEN } from '@/services/admin.api'
+import { getPushToken, pushPermission, requestPushPermission } from '@/services/push.service'
 import { formatRelativeTime } from '@/utils/dateFormatter'
 
 const NotificationBell = () => {
@@ -13,6 +14,25 @@ const NotificationBell = () => {
   const navigate = useNavigate()
   const { data, refetch } = useQuery(ADMIN_NOTIFICATIONS, { pollInterval: 60_000, fetchPolicy: 'cache-and-network' })
   const [markRead] = useMutation(MARK_ADMIN_NOTIFICATIONS_READ)
+  const [registerPush] = useMutation(REGISTER_PUSH_TOKEN)
+  const [pushState, setPushState] = useState(pushPermission)
+
+  const subscribePush = async () => {
+    const token = await getPushToken().catch(() => null)
+    if (token) await registerPush({ variables: { token } }).catch(() => {})
+  }
+
+  // Tokens rotate: re-register on every load once alerts are allowed.
+  useEffect(() => {
+    if (pushPermission() === 'granted') subscribePush()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const enablePush = async () => {
+    const permission = await requestPushPermission()
+    setPushState(permission)
+    if (permission === 'granted') await subscribePush()
+  }
   const items = data?.adminNotifications || []
   const unread = items.filter((n) => !n.is_read)
 
@@ -38,6 +58,18 @@ const NotificationBell = () => {
               <Button size="small" onClick={async () => { await markRead({ variables: { ids: unread.map((n) => n.id) } }); refetch() }}>Mark all read</Button>
             )}
           </Box>
+          {pushState === 'default' && (
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, px: 1.5, py: 1, borderBottom: 1, borderColor: 'divider' }}>
+              <BellRing size={16} />
+              <Typography variant="caption" sx={{ flex: 1 }}>Get desktop alerts for new enquiries, orders and messages.</Typography>
+              <Button size="small" variant="contained" onClick={enablePush}>Turn on</Button>
+            </Box>
+          )}
+          {pushState === 'denied' && (
+            <Typography variant="caption" color="text.secondary" sx={{ px: 1.5, py: 1, borderBottom: 1, borderColor: 'divider' }}>
+              Desktop alerts are blocked for this site in your browser settings.
+            </Typography>
+          )}
           <List dense sx={{ overflowY: 'auto' }}>
             {items.length === 0 && <Typography variant="body2" color="text.secondary" sx={{ p: 2 }}>You’re all caught up.</Typography>}
             {items.map((n) => (

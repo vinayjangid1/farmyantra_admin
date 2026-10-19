@@ -27,6 +27,8 @@ export const DELETE_ROLE = gql`mutation DeleteRole($id: ID!) { deleteRole(id: $i
 export const AUDIT_LOGS = gql`query AuditLogs($entity: String, $entityId: String, $action: String, $search: String, $from: String, $to: String, $page: Int, $limit: Int) { auditLogs(entity: $entity, entityId: $entityId, action: $action, search: $search, from: $from, to: $to, page: $page, limit: $limit) { ${PAGE} } }`
 export const ADMIN_NOTIFICATIONS = gql`query AdminNotifications { adminNotifications }`
 export const MARK_ADMIN_NOTIFICATIONS_READ = gql`mutation MarkAdminNotificationsRead($ids: [ID!]!) { markAdminNotificationsRead(ids: $ids) { ${RESULT} } }`
+export const REGISTER_PUSH_TOKEN = gql`mutation RegisterPushToken($token: String!) { registerPushToken(token: $token) { ${RESULT} } }`
+export const UNREGISTER_PUSH_TOKEN = gql`mutation UnregisterPushToken($token: String!) { unregisterPushToken(token: $token) { ${RESULT} } }`
 
 // ── Dashboard & reports ─────────────────────────────────
 export const DASHBOARD = gql`query Dashboard { dashboard }`
@@ -127,6 +129,7 @@ export const ASSIGNABLE_MEMBERS = gql`query AssignableMembers { assignableMember
 export const ORDER_VERSIONS = gql`query OrderVersions($orderId: ID!) { orderVersions(orderId: $orderId) }`
 export const CUSTOMER_LOOKUP = gql`query CustomerLookup($search: String!) { customerLookup(search: $search) }`
 export const ACCEPT_ORDER = gql`mutation AcceptOrder($id: ID!) { acceptOrder(id: $id) { ${RESULT} } }`
+export const ACCEPT_ORDER_REQUEST = gql`mutation AcceptOrderRequest($enquiryId: ID!, $input: JSON) { acceptOrderRequest(enquiryId: $enquiryId, input: $input) { ${RESULT} } }`
 export const CREATE_ORDER_FOR_CUSTOMER = gql`mutation CreateOrderForCustomer($input: JSON!) { createOrderForCustomer(input: $input) { ${RESULT} } }`
 export const PROPOSE_ORDER_REVISION = gql`mutation ProposeOrderRevision($orderId: ID!, $changes: JSON!, $reason: String!, $idempotencyKey: String!) { proposeOrderRevision(orderId: $orderId, changes: $changes, reason: $reason, idempotencyKey: $idempotencyKey) { ${RESULT} } }`
 export const WITHDRAW_ORDER_REVISION = gql`mutation WithdrawOrderRevision($versionId: ID!, $reason: String!) { withdrawOrderRevision(versionId: $versionId, reason: $reason) { ${RESULT} } }`
@@ -173,6 +176,7 @@ export const REPLACE_ORDER_DOCUMENT = gql`mutation ReplaceOrderDocument($id: ID!
 export const WITHDRAW_ORDER_DOCUMENT = gql`mutation WithdrawOrderDocument($id: ID!, $reason: String!) { withdrawOrderDocument(id: $id, reason: $reason) { ${RESULT} } }`
 export const SET_ORDER_DOCUMENT_VISIBILITY = gql`mutation SetOrderDocumentVisibility($id: ID!, $visibility: String!) { setOrderDocumentVisibility(id: $id, visibility: $visibility) { ${RESULT} } }`
 export const ORDER_PAYMENTS = gql`query OrderPayments($orderId: ID!) { orderPayments(orderId: $orderId) }`
+export const PAYMENTS_LEDGER = gql`query Payments($from: String, $to: String, $mode: String, $purpose: String, $entryType: String, $status: String, $search: String, $page: Int, $limit: Int) { payments(from: $from, to: $to, mode: $mode, purpose: $purpose, entryType: $entryType, status: $status, search: $search, page: $page, limit: $limit) }`
 export const RECORD_PAYMENT = gql`mutation RecordPayment($orderId: ID!, $input: JSON!) { recordPayment(orderId: $orderId, input: $input) { ${RESULT} } }`
 export const VOID_PAYMENT = gql`mutation VoidPayment($id: ID!, $reason: String!) { voidPayment(id: $id, reason: $reason) { ${RESULT} } }`
 
